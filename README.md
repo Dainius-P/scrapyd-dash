@@ -1,0 +1,2 @@
+# scrapyd-dash
+Scrapyd Dashboard
