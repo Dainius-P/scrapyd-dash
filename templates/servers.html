@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block title %}Servers{% endblock %}
+
+{% block body %}
+	{% for server in servers %}
+		{{server.ip}} 
+		{% if server.status == "ok" %} ONLINE {% endif %}
+	{% endfor %}
+{% endblock %}
