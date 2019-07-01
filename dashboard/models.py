@@ -24,6 +24,10 @@ class ScrapydServer(Model):
         db_table = 'scrapyd_dash_servers'
 
 
+class ScrapydProjects(Model):
+    pass
+
+
 class Task(Model):
     id = PositiveIntegerField(primary_key=True)
     name = CharField(max_length=256, null=False, blank=False)

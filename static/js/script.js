@@ -31,3 +31,41 @@ function ValidateIPaddress(ip)
         document.add_server_form.server_ip.focus();return false;
     }
 }
+
+function django_messages(msg, type) {
+    /*
+    This dict is needed because some of the django 
+    message types are not the same as in bootstrap notify
+    */
+    var types = {
+        "success": "success",
+        "error": "danger",
+        "info": "info"
+    };
+    $.notify({
+        // options
+        message: msg
+    },{
+        type: types[type],
+        allow_dismiss: true,
+        newest_on_top: true,
+        placement: {
+            from: "top",
+            align: "center"
+        },
+        offset: {
+            x: 20,
+            y: 5
+        },
+        delay: 5000,
+        timer: 1000,
+        animate: {
+            enter: 'animated fadeInDown',
+            exit: 'animated fadeOutUp'
+        }
+    });
+}
+
+function showLoader() {
+    document.getElementById("loader").style.display = "block";
+}

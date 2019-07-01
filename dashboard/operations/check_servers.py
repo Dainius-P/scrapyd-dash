@@ -5,8 +5,8 @@ import requests
 import asyncio
 
 
+
 class CheckServers(object):
-    """docstring for CheckServers"""
     def __init__(self):
         super(CheckServers, self).__init__()
         self.servers = []
@@ -15,10 +15,10 @@ class CheckServers(object):
         self.servers = ScrapydServer.objects.all()
 
     def check_server(self, session, server):
-        url = "http://{0}:{1}/daemonstatus.json".format(server.ip, server.port)
+        url = "http://{}:{}/daemonstatus.json".format(server.ip, server.port)
 
         try:
-            with session.get(url) as response:
+            with session.get(url, timeout=2) as response:
                 data = response.json()
 
                 server.node_name = data.get("node_name")

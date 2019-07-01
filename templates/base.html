@@ -10,14 +10,28 @@
 
          <!-- Bootstrap CSS -->
         <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'css/animate.css' %}">
         <!-- Custom styles for this template-->
         <link rel="stylesheet" type="text/css" href="{% static 'css/sb-admin-2.min.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script type="text/javascript" src="{% static 'js/bootstrap-notify.min.js' %}"></script>
         <script src="https://kit.fontawesome.com/32b20ea39a.js"></script>
+        <script type="text/javascript" src="{% static 'js/script.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/pace.js' %}"></script>
+
         {% block head %}
         {% endblock %}
     </head>
 <body id="page-top">
+  {% if messages %}
+      {% for message in messages %}
+        <script>django_messages("{{message}}", "{{message.tags}}");</script>
+      {% endfor %}
+  {% endif %}
+
+  <div id="pace"></div>
 
   <!-- Page Wrapper -->
   <div id="wrapper">
@@ -26,30 +40,35 @@
     <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
       <!-- Sidebar - Brand -->
-      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
-        <div class="sidebar-brand-icon rotate-n-15">
-          <i class="fas fa-laugh-wink"></i>
-        </div>
+      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{% url 'index' %}">
         <div class="sidebar-brand-text mx-3">Scrapyd Dash</div>
       </a>
 
       <!-- Divider -->
       <hr class="sidebar-divider my-0">
 
+      <div class="sidebar-heading">
+        Overview
+      </div>
+
       <!-- Nav Item - Dashboard -->
-      <li class="nav-item active">
-        <a class="nav-link" href="{% url 'index' %}">
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'index' %}" onclick="showLoader()">
           <i class="fas fa-fw fa-tachometer-alt"></i>
-          <span>Servers</span></a>
+          <span><b>Servers</b></span></a>
       </li>
 
-      <!-- Divider -->
-      <hr class="sidebar-divider">
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'tasks' %}" onclick="showLoader()">
+          <i class="fas fa-tasks"></i>
+          <span><b>Tasks</b></span></a>
+      </li>
 
-      <!-- Heading -->
-      <div class="sidebar-heading">
-        Interface
-      </div>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'scheduled_tasks' %}" onclick="showLoader()">
+          <i class="fas fa-clipboard-list"></i>
+          <span><b>Scheduled tasks</b></span></a>
+      </li>
 
       <!-- Divider -->
       <hr class="sidebar-divider d-none d-md-block">
@@ -57,7 +76,6 @@
       <div class="sidebar-heading">
         Readme
       </div>
-
 
     </ul>
     <!-- End of Sidebar -->
@@ -109,9 +127,6 @@
   <a class="scroll-to-top rounded" href="#page-top">
     <i class="fas fa-angle-up"></i>
   </a>
-        <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
-        <script type="text/javascript" src="{% static 'js/sb-admin-2.min.js' %}"></script>
-        <script type="text/javascript" src="{% static 'js/bootstrap-notify.min.js' %}"></script>
-        <script type="text/javascript" src="{% static 'js/script.js' %}"></script>
-    </body>
+    <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
+  </body>
 </html>

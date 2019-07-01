@@ -7,11 +7,11 @@
     <h1 class="h3 mb-0 text-gray-800">Servers</h1>
     <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#AddServerModal">ADD SERVER</button>
 
-    <div class="modal fade" id="AddServerModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="AddServerModal" tabindex="-1" role="dialog" aria-labelledby="addServerModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">
+                <h5 class="modal-title" id="addServerModalLabel">
                 <b>Add new ScrapydServer</b></h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
@@ -48,7 +48,7 @@
 	          <th>#</th>
 	          <th>Status</th>
 	          <th>Scrapyd IP</th>
-	          <th>Scrapyd PORT</th>
+	          <th>Scrapyd Port</th>
 	          <th>Node Name</th>
 	          <th>Tasks Pending</th>
 	          <th>Tasks Running</th>
@@ -68,11 +68,11 @@
                         <button type="button" class="btn btn-link" data-toggle="modal" data-target="#{{server.ip}}:{{server_port}}">Log</button>
 
                         <!-- Modal -->
-                        <div class="modal fade" id="{{server.ip}}:{{server_port}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal fade" id="{{server.ip}}:{{server_port}}" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
                           <div class="modal-dialog" role="document">
                             <div class="modal-content">
                               <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">
+                                <h5 class="modal-title" id="errorModalLabel">
                                     <b>{{server.ip}}:{{server.port}} error log</b></h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                   <span aria-hidden="true">&times;</span>
@@ -103,12 +103,31 @@
 	              <td></td>
 	              {% endif %}
                   <td>
-                    <form action="/delete-server/" method="post">
-                      {% csrf_token %}
-                      <input type="text" name="server_ip" value="{{server.ip}}" hidden>
-                      <input type="text" name="server_port" value="{{server.port}}" hidden>
-                      <button type="submit" class="btn btn-danger btn-sm"><b>DELETE</b></button>
-                    </form>
+                    <button type="submit" class="btn btn-danger btn-sm"  data-toggle="modal" data-target="#delete{{server.ip}}:{{server_port}}"><b>DELETE</b></button>
+                    <div class="modal fade" id="delete{{server.ip}}:{{server_port}}" tabindex="-1" role="dialog" aria-labelledby="deleteServerModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                <h5 class="modal-title" id="deleteServerModalLabel">
+                                <b>Delete ScrapydServer</b></h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                                </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="/delete-server/" method="post">
+                                        {% csrf_token %}
+                                        <input type="text" name="server_ip" value="{{server.ip}}" hidden>
+                                        <input type="text" name="server_port" value="{{server.port}}" hidden>
+                                        <div class="form-group">
+                                          Are you sure you want to delete server <b>{{server.ip}}:{{server.port}}</b>
+                                        </div>
+                                        <button type="submit" class="btn-sm btn-danger">DELETE</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                   </td>
 	            </tr>
 	      	{% endfor %}
