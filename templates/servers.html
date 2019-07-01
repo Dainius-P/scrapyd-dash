@@ -3,8 +3,118 @@
 {% block title %}Servers{% endblock %}
 
 {% block body %}
-	{% for server in servers %}
-		{{server.ip}} 
-		{% if server.status == "ok" %} ONLINE {% endif %}
-	{% endfor %}
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Servers</h1>
+    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#AddServerModal">ADD SERVER</button>
+
+    <div class="modal fade" id="AddServerModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">
+                <b>Add new ScrapydServer</b></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                    <form action="/add-server/" name="add_server_form" method="post" onsubmit="return ValidateIPaddress(document.add_server_form.server_ip);">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="server_ip">Server IP</label>
+                            <input type="text" class="form-control" name="server_ip" placeholder="Scrapyd Server IP" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="server_port">Server Port</label>
+                            <input type="number" max="65535" min="0" class="form-control" name="server_port" placeholder="Scrapyd Server Port" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+
+<div class="card shadow mb-4">
+	<div class="card-header py-3">
+	  <h6 class="m-0 font-weight-bold text-primary">Scrapyd Servers Table</h6>
+	</div>
+	<div class="card-body">
+	  <div class="table-responsive">
+	    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+	      <thead>
+	        <tr>
+	          <th>#</th>
+	          <th>Status</th>
+	          <th>Scrapyd IP</th>
+	          <th>Scrapyd PORT</th>
+	          <th>Node Name</th>
+	          <th>Tasks Pending</th>
+	          <th>Tasks Running</th>
+	          <th>Tasks Finished</th>
+              <th>Actions</th>
+	        </tr>
+	      </thead>
+	      <tbody>
+	      	{% for server in servers %}
+	          	<tr>
+	              <td>{{ forloop.counter }}</td>
+	              <td>
+    	              {% if server.status == "ok" %} 
+    	              	<span class="badge badge-success">ONLINE</span> {% else %} <span class="badge badge-danger">OFFLINE</span>
+
+                        <!-- Button trigger modal -->
+                        <button type="button" class="btn btn-link" data-toggle="modal" data-target="#{{server.ip}}:{{server_port}}">Log</button>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="{{server.ip}}:{{server_port}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                          <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">
+                                    <b>{{server.ip}}:{{server.port}} error log</b></h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>
+                              <div class="modal-body">
+                                <div class="card">
+                                  <div class="card-body">
+                                    {{server.status_message}}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+    	              {% endif %}</td>
+	              <td>{{server.ip}}</td>
+	              <td>{{server.port}}</td>
+	              {% if server.status == "ok" %} 
+	              <td>{{server.node_name}}</td>
+	              <td><span class="badge badge-pill badge-info">{{server.pending_tasks}}</span></td>
+	              <td><span class="badge badge-pill badge-warning">{{server.running_tasks}}</span></td>
+	              <td><span class="badge badge-pill badge-success">{{server.finished_tasks}}</span></td>
+	              {% else %}
+	              <td></td>
+	              <td></td>
+	              <td></td>
+	              <td></td>
+	              {% endif %}
+                  <td>
+                    <form action="/delete-server/" method="post">
+                      {% csrf_token %}
+                      <input type="text" name="server_ip" value="{{server.ip}}" hidden>
+                      <input type="text" name="server_port" value="{{server.port}}" hidden>
+                      <button type="submit" class="btn btn-danger btn-sm"><b>DELETE</b></button>
+                    </form>
+                  </td>
+	            </tr>
+	      	{% endfor %}
+	      </tbody>
+	    </table>
+	  </div>
+	</div>
+</div>
 {% endblock %}

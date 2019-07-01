@@ -9,21 +9,30 @@ class CheckServers(object):
     """docstring for CheckServers"""
     def __init__(self):
         super(CheckServers, self).__init__()
-        self.servers = ScrapydServer.objects.all() #scrapyd servers
+        self.servers = []
+
+    def _load_servers(self):
+        self.servers = ScrapydServer.objects.all()
 
     def check_server(self, session, server):
-        url = "http://%s/daemonstatus.json" % server.ip
+        url = "http://{0}:{1}/daemonstatus.json".format(server.ip, server.port)
 
-        with session.get(url) as response:
-            data = response.json()
+        try:
+            with session.get(url) as response:
+                data = response.json()
 
-            server.node_name = data.get("node_name")
-            server.status = data.get("status")
-            server.pending_tasks = data.get("pending")
-            server.finished_tasks = data.get("finished")
-            server.running_tasks = data.get("running")
+                server.node_name = data.get("node_name")
+                server.status = data.get("status")
+                server.pending_tasks = data.get("pending")
+                server.finished_tasks = data.get("finished")
+                server.running_tasks = data.get("running")
 
+                server.save()
+        except Exception as e:
+            server.status = "error"
+            server.status_message = e
             server.save()
+
 
     async def execute_servers_check(self):
         with ThreadPoolExecutor(max_workers=10) as executor:
@@ -44,6 +53,8 @@ class CheckServers(object):
                     pass
 
     def check_servers(self):
+        self._load_servers()
+
         loop = asyncio.new_event_loop();
         asyncio.set_event_loop(loop)
         future = asyncio.ensure_future(self.execute_servers_check())
