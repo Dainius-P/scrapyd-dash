@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Add Task{% endblock %}
+
+{% block body %}
+	<div class="d-sm-flex align-items-center justify-content-between mb-4">
+		<h1 class="h3 mb-0 text-gray-800">Add new task</h1>
+	</div>
+
+<form action="/tasks-add/" id="taskForm" method="post" data-projects-url="{% url 'ajax_load_projects' %}" data-spiders-url="{% url 'ajax_load_spiders' %}" novalidate>
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Submit">
+</form>
+
+<script>
+    $("#id_server").change(function () {
+      var url = $("#taskForm").attr("data-projects-url");
+      var serverId = $(this).val();
+
+      $.ajax({
+        url: url,
+        data: {
+          'server': serverId
+        },
+        success: function (data) { 
+          $("#id_project").html(data);
+        }
+      });
+
+    });
+
+    $("#id_project").change(function () {
+      var url = $("#taskForm").attr("data-spiders-url");
+      var projectId = $(this).val();
+
+      $.ajax({
+        url: url,
+        data: {
+          'project': projectId
+        },
+        success: function (data) { 
+          $("#id_spider").html(data);
+        }
+      });
+
+    });
+  </script>
+
+{% endblock %}

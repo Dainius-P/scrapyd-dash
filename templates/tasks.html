@@ -3,4 +3,74 @@
 {% block title %}Tasks{% endblock %}
 
 {% block body %}
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Tasks</h1>
+    <a href="{% url 'add_task' %}"><button type="button" class="btn btn-secondary" >ADD TASK</button></a>
+  </div>
+
+<div class="card shadow mb-4">
+	<div class="card-header py-3">
+	  <h6 class="m-0 font-weight-bold text-primary">Scrapy Tasks Table</h6>
+	</div>
+	<div class="card-body">
+	  <div class="table-responsive">
+        {% if tasks %}
+    	    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+    	      <thead>
+    	        <tr>
+    	          <th>#</th>
+                  <th>Task ID</th>
+                  <th>Task Name</th>
+    	          <th>Status</th>
+    	          <th>Spider Name</th>
+    	          <th>Project Name</th>
+    	          <th>Server Address</th>
+    	          <th>Server Host</th>
+                  <th>Runtime</th>
+    	          <th>Start DateTime</th>
+                  <th>End DateTime</th>
+                  <th>Action</th>
+    	        </tr>
+    	      </thead>
+    	      <tbody>
+    	      	{% for task in tasks %}
+    	          	<tr>
+    	              <td>{{ forloop.counter }}</td>
+                      <td>{{ task.id }}</td>
+                      <td>{{ task.name }}</td>
+                      <td>
+                        {% if task.status == "running" %}
+                            <span class="badge badge-pill badge-warning"><b>{{ task.status }}</b></span>
+                        {% elif task.status == "pending" %}
+                            <span class="badge badge-pill badge-info"><b>{{ task.status }}</b></span>
+                        {%  else %}
+                            <span class="badge badge-pill badge-success"><b>{{ task.status }}</b></span>
+                        {% endif %}
+                      </td>
+                      <td>{{ task.spider }}</td>
+    	              <td>{{ task.project.name }}</td>
+    	              <td>{{ task.server.ip}}:{{ task.server.port}}</td>
+                      <td>{{ task.server.node_name}}</td>
+                      <td>{{ task.runtime }}</td>
+                      <td>{{ task.start_datetime}}</td>
+                      <td>{% if task.finished_datetime %}{{ task.finished_datetime}} {% endif %}</td>
+                      <td>
+                        {% if task.status == "running" %}
+                            <button type="submit" class="btn btn-primary btn-sm"><b>Stop</b></button>
+                        {% elif task.status == "pending" %}
+                            <button type="submit" class="btn btn-primary btn-sm"><b>Remove</b></button>
+                        {% else %}
+                            <button type="submit" class="btn btn-primary btn-sm"><b>Remove</b></button>
+                        {% endif %}
+                      </td>
+    	            </tr>
+    	      	{% endfor %}
+    	      </tbody>
+    	    </table>
+        {% else %}
+            <b>There are no tasks.</b>
+        {% endif %}
+	  </div>
+	</div>
+</div>
 {% endblock %}

@@ -3,11 +3,11 @@ import requests
 """
 Scheduls a task to run
 """
-def add_job(project, spider, **kwargs):
-	url = "http://{}/schedule.json".format(server)
+def add_task(project, spider, server, **kwargs):
+	url = "http://{}:{}/schedule.json".format(server.ip, server.port)
 
 	data = {
-		"project": project,
+		"project": project.name,
 		"spider": spider
 	}
 

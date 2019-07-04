@@ -42,98 +42,103 @@
 	</div>
 	<div class="card-body">
 	  <div class="table-responsive">
-	    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-	      <thead>
-	        <tr>
-	          <th>#</th>
-	          <th>Status</th>
-	          <th>Scrapyd IP</th>
-	          <th>Scrapyd Port</th>
-	          <th>Node Name</th>
-	          <th>Tasks Pending</th>
-	          <th>Tasks Running</th>
-	          <th>Tasks Finished</th>
-              <th>Actions</th>
-	        </tr>
-	      </thead>
-	      <tbody>
-	      	{% for server in servers %}
-	          	<tr>
-	              <td>{{ forloop.counter }}</td>
-	              <td>
-    	              {% if server.status == "ok" %} 
-    	              	<span class="badge badge-success">ONLINE</span> {% else %} <span class="badge badge-danger">OFFLINE</span>
+        {% if servers %}
+    	    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+    	      <thead>
+    	        <tr>
+    	          <th>#</th>
+    	          <th>Status</th>
+    	          <th>Scrapyd IP</th>
+    	          <th>Scrapyd Port</th>
+    	          <th>Node Name</th>
+    	          <th>Tasks Pending</th>
+    	          <th>Tasks Running</th>
+    	          <th>Tasks Finished</th>
+                  <th>Actions</th>
+    	        </tr>
+    	      </thead>
+    	      <tbody>
+    	      	{% for server in servers %}
+    	          	<tr>
+    	              <td>{{ forloop.counter }}</td>
+    	              <td>
+        	              {% if server.status == "ok" %} 
+        	              	<span class="badge badge-success">ONLINE</span> {% else %} <span class="badge badge-danger">OFFLINE</span>
 
-                        <!-- Button trigger modal -->
-                        <button type="button" class="btn btn-link" data-toggle="modal" data-target="#{{server.ip}}:{{server_port}}">Log</button>
+                            <!-- Button trigger modal -->
+                            <button type="button" class="btn btn-link" data-toggle="modal" data-target="#{{server.ip}}:{{server.port}}">Log</button>
 
-                        <!-- Modal -->
-                        <div class="modal fade" id="{{server.ip}}:{{server_port}}" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
-                          <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                              <div class="modal-header">
-                                <h5 class="modal-title" id="errorModalLabel">
-                                    <b>{{server.ip}}:{{server.port}} error log</b></h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                  <span aria-hidden="true">&times;</span>
-                                </button>
-                              </div>
-                              <div class="modal-body">
-                                <div class="card">
-                                  <div class="card-body">
-                                    {{server.status_message}}
+                            <!-- Modal -->
+                            <div class="modal fade" id="{{server.ip}}:{{server.port}}" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
+                              <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title" id="errorModalLabel">
+                                        <b>{{server.ip}}:{{server.port}} error log</b></h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                      <span aria-hidden="true">&times;</span>
+                                    </button>
+                                  </div>
+                                  <div class="modal-body">
+                                    <div class="card">
+                                      <div class="card-body">
+                                        {{server.status_message}}
+                                      </div>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
                             </div>
-                          </div>
-                        </div>
-    	              {% endif %}</td>
-	              <td>{{server.ip}}</td>
-	              <td>{{server.port}}</td>
-	              {% if server.status == "ok" %} 
-	              <td>{{server.node_name}}</td>
-	              <td><span class="badge badge-pill badge-info">{{server.pending_tasks}}</span></td>
-	              <td><span class="badge badge-pill badge-warning">{{server.running_tasks}}</span></td>
-	              <td><span class="badge badge-pill badge-success">{{server.finished_tasks}}</span></td>
-	              {% else %}
-	              <td></td>
-	              <td></td>
-	              <td></td>
-	              <td></td>
-	              {% endif %}
-                  <td>
-                    <button type="submit" class="btn btn-danger btn-sm"  data-toggle="modal" data-target="#delete{{server.ip}}:{{server_port}}"><b>DELETE</b></button>
-                    <div class="modal fade" id="delete{{server.ip}}:{{server_port}}" tabindex="-1" role="dialog" aria-labelledby="deleteServerModalLabel" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                <h5 class="modal-title" id="deleteServerModalLabel">
-                                <b>Delete ScrapydServer</b></h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                                </button>
-                                </div>
-                                <div class="modal-body">
-                                    <form action="/delete-server/" method="post">
-                                        {% csrf_token %}
-                                        <input type="text" name="server_ip" value="{{server.ip}}" hidden>
-                                        <input type="text" name="server_port" value="{{server.port}}" hidden>
-                                        <div class="form-group">
-                                          Are you sure you want to delete server <b>{{server.ip}}:{{server.port}}</b>
-                                        </div>
-                                        <button type="submit" class="btn-sm btn-danger">DELETE</button>
-                                    </form>
+        	              {% endif %}</td>
+    	              <td>{{server.ip}}</td>
+    	              <td>{{server.port}}</td>
+    	              {% if server.status == "ok" %} 
+    	              <td>{{server.node_name}}</td>
+    	              <td><span class="badge badge-pill badge-info">{{server.pending_tasks}}</span></td>
+    	              <td><span class="badge badge-pill badge-warning">{{server.running_tasks}}</span></td>
+    	              <td><span class="badge badge-pill badge-success">{{server.finished_tasks}}</span></td>
+    	              {% else %}
+    	              <td></td>
+    	              <td></td>
+    	              <td></td>
+    	              <td></td>
+    	              {% endif %}
+                      <td>
+                        <button type="submit" class="btn btn-danger btn-sm"  data-toggle="modal" data-target="#delete{{server.ip}}:{{server.port}}"><b>Delete</b></button>
+                        <div class="modal fade" id="delete{{server.ip}}:{{server.port}}" tabindex="-1" role="dialog" aria-labelledby="deleteServerModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                    <h5 class="modal-title" id="deleteServerModalLabel">
+                                    <b>Delete ScrapydServer</b></h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form action="/delete-server/" method="post">
+                                            {% csrf_token %}
+                                            <input type="text" name="server_ip" value="{{server.ip}}" hidden>
+                                            <input type="text" name="server_port" value="{{server.port}}" hidden>
+                                            <div class="form-group">
+                                              Are you sure you want to delete server <b>{{server.ip}}:{{server.port}}</b>
+                                            </div>
+                                            <button type="submit" class="btn-sm btn-danger">Delete</button>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                  </td>
-	            </tr>
-	      	{% endfor %}
-	      </tbody>
-	    </table>
+                      </td>
+    	            </tr>
+    	      	{% endfor %}
+    	      </tbody>
+    	    </table>
+        {% else %}
+            <b>There are no servers.</b>
+        {% endif %}
 	  </div>
 	</div>
 </div>
+
 {% endblock %}
