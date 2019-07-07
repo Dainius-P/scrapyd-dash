@@ -40,7 +40,7 @@
     <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
       <!-- Sidebar - Brand -->
-      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{% url 'index' %}">
+      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{% url 'servers' %}">
         <div class="sidebar-brand-text mx-3">Scrapyd Dash</div>
       </a>
 
@@ -53,7 +53,7 @@
 
       <!-- Nav Item - Dashboard -->
       <li class="nav-item">
-        <a class="nav-link" href="{% url 'index' %}" onclick="showLoader()">
+        <a class="nav-link" href="{% url 'servers' %}" onclick="showLoader()">
           <i class="fas fa-fw fa-tachometer-alt"></i>
           <span><b>Servers</b></span></a>
       </li>
@@ -127,6 +127,15 @@
   <a class="scroll-to-top rounded" href="#page-top">
     <i class="fas fa-angle-up"></i>
   </a>
+    <script src="{% static 'js/sb-admin-2.min.js' %}"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
+      <script type="text/javascript" src="{% static 'js/dataTables.bootstrap4.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script type="text/javascript">
+        // Call the dataTables jQuery plugin
+  $(document).ready(function() {
+    $('#dataTable').DataTable();
+  });
+  </script>
   </body>
 </html>

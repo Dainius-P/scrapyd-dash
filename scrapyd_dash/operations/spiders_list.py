@@ -8,7 +8,9 @@ Gets spiders list from specific scrapyd server and specific project
 -project = project name
 """
 def spiders_list(server, project="default"):
-	full_url = "http://{}/listspiders.json?project={}".format(server, project)
+	full_url = "http://{}:{}/listspiders.json?project={}".format(server.ip,
+																 server.port,
+																 project)
 	timeout = 5
 
 	with requests.Session() as session:

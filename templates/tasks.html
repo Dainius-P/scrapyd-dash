@@ -13,55 +13,64 @@
 	  <h6 class="m-0 font-weight-bold text-primary">Scrapy Tasks Table</h6>
 	</div>
 	<div class="card-body">
-	  <div class="table-responsive">
+	  <div class="table-responsive" style="overflow: auto;">
         {% if tasks %}
     	    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
     	      <thead>
     	        <tr>
     	          <th>#</th>
-                  <th>Task ID</th>
-                  <th>Task Name</th>
+                <th>Task ID</th>
+                <th>Task Name</th>
     	          <th>Status</th>
     	          <th>Spider Name</th>
     	          <th>Project Name</th>
     	          <th>Server Address</th>
     	          <th>Server Host</th>
-                  <th>Runtime</th>
+                <th>Runtime</th>
     	          <th>Start DateTime</th>
-                  <th>End DateTime</th>
-                  <th>Action</th>
+                <th>End DateTime</th>
+                <th>Action</th>
     	        </tr>
     	      </thead>
     	      <tbody>
     	      	{% for task in tasks %}
     	          	<tr>
-    	              <td>{{ forloop.counter }}</td>
+    	                <th scope="row">{{ forloop.counter }}</th>
                       <td>{{ task.id }}</td>
                       <td>{{ task.name }}</td>
                       <td>
                         {% if task.status == "running" %}
                             <span class="badge badge-pill badge-warning"><b>{{ task.status }}</b></span>
-                        {% elif task.status == "pending" %}
-                            <span class="badge badge-pill badge-info"><b>{{ task.status }}</b></span>
-                        {%  else %}
+                        {% elif task.status == "finished" %}
                             <span class="badge badge-pill badge-success"><b>{{ task.status }}</b></span>
+                        {% else %}
+                            <span class="badge badge-pill badge-info"><b>pending</b></span>
                         {% endif %}
                       </td>
                       <td>{{ task.spider }}</td>
     	              <td>{{ task.project.name }}</td>
     	              <td>{{ task.server.ip}}:{{ task.server.port}}</td>
                       <td>{{ task.server.node_name}}</td>
-                      <td>{{ task.runtime }}</td>
-                      <td>{{ task.start_datetime}}</td>
+                      <td>{% if task.runtime %} {{ task.runtime }} {% endif %}</td>
+                      <td>{% if task.start_datetime %} {{ task.start_datetime}} {% endif %}</td>
                       <td>{% if task.finished_datetime %}{{ task.finished_datetime}} {% endif %}</td>
                       <td>
-                        {% if task.status == "running" %}
-                            <button type="submit" class="btn btn-primary btn-sm"><b>Stop</b></button>
-                        {% elif task.status == "pending" %}
-                            <button type="submit" class="btn btn-primary btn-sm"><b>Remove</b></button>
-                        {% else %}
-                            <button type="submit" class="btn btn-primary btn-sm"><b>Remove</b></button>
-                        {% endif %}
+                        <div class="btn-group" role="group" aria-label="Basic example">
+                          <form action="{% url 'task_details' task.id %}" method="post" style="margin-right: 5px;">
+                            {% csrf_token %}
+                            <input type="hidden" name="_method" value="delete">
+                          {% if task.status == "running" %}
+                              <button type="submit" class="btn btn-primary btn-sm"><b>Stop</b></button>
+                          {% elif task.status == "pending" %}
+                              <button type="submit" class="btn btn-outline-primary btn-sm"><b>Remove</b></button>
+                          {% else %}
+                              <button type="submit" class="btn btn-outline-primary btn-sm"><b>Remove</b></button>
+                          {% endif %}
+                          </form>
+                          <form action="{% url 'task_details' task.id %}" method="get">
+                            <button type="submit"  class="btn btn-outline-primary btn-sm"><b>Details</b></button>
+                          </form>
+                        </div>
                       </td>
     	            </tr>
     	      	{% endfor %}

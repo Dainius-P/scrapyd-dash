@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}Add Scheduled Task{% endblock %}
+
+{% block body %}
+
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Add new task</h1>
+  </div>
+<form action="" method="post">
+  {% csrf_token %}
+  <div class="form-group col-md-12">
+    <label for="name">Task Name</label>
+    <input type="text" name="name" class="form-control" id="name" placeholder="Task Name">
+  </div>
+
+  <div class="form-group col-md-12">
+    <label for="serverSelectLabel">Server</label>
+    <select id="serverSelect" name="server" class="form-control" required>
+      <option value="" disabled selected>Select Server</option>
+      {% for server in servers %}
+        <option value="{{server.pk}}">{{ server }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="form-group col-md-12">
+    <select id="projectSelect" name="project" class="form-control" required>
+    </select>
+  </div>
+  <div class="form-group col-md-12">
+    <select id="versionSelect" name="version" class="form-control" required>
+    </select>
+  </div>
+  <div class="form-group col-md-12">
+    <select id="spiderSelect" name="spider" class="form-control" required>
+    </select>
+  </div>
+
+  <div class="form-group col-md-12">
+  	<label for="year">Year</label>
+  	<input type="number" min=1 name="year" />
+  </div>
+
+  <div class="form-group col-md-12">
+  	<label for="month">Month</label>
+  	<input type="number" min=1 max=12 name="month" />
+  </div>
+
+   <div class="form-group col-md-12">
+  	<label for="day">Day</label>
+  	<input type="number" min=1 max=31 name="day" />
+  </div>
+
+    <div class="form-group col-md-12">
+  	<label for="week">Week</label>
+  	<input type="number" min=1 max=52 name="week" />
+  </div>
+
+  <div class="form-group col-md-12">
+    <label for="weekday-mon">Monday</label>
+    <input type="checkbox" id="weekday-mon" />
+
+    <label for="weekday-tue">Tuesday</label>
+    <input type="checkbox" id="weekday-tue" />
+
+    <label for="weekday-wed">Wednesday</label>
+    <input type="checkbox" id="weekday-wed" />
+
+    <label for="weekday-thu">Thursday</label>
+    <input type="checkbox" id="weekday-thu"/>
+
+    <label for="weekday-fri">Friday</label>
+    <input type="checkbox" id="weekday-fri" />
+
+    <label for="weekday-sat">Saturday</label>
+    <input type="checkbox" id="weekday-sat"  />
+
+    <label for="weekday-sun">Sunday</label>
+    <input type="checkbox" id="weekday-sun" />
+  </div>
+
+      <div class="form-group col-md-12">
+  	<label for="hour">Hours</label>
+  	<input type="number" min=0 max=24 name="hour" />
+  </div>
+
+      <div class="form-group col-md-12">
+  	<label for="minute">Minutes</label>
+  	<input type="number" min=0 max=60 name="minute" />
+  </div>
+
+      <div class="form-group col-md-12">
+  	<label for="second">Seconds</label>
+  	<input type="number" min=0 max=60 name="second" />
+  </div>
+
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+<script type="text/javascript" src="{% static 'js/chained_dropdown.js' %}"></script>
+{% endblock %}

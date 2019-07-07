@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}Add Task{% endblock %}
+
+{% block body %}
+
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Add new task</h1>
+  </div>
+<form action="" method="post">
+  {% csrf_token %}
+  <div class="form-group col-md-12">
+    <label for="name">Task Name</label>
+    <input type="text" name="name" class="form-control" id="name" placeholder="Task Name">
+  </div>
+
+  <div class="form-group col-md-12">
+    <label for="serverSelectLabel">Server</label>
+    <select id="serverSelect" name="server" class="form-control" required>
+      <option value="" disabled selected>Select Server</option>
+      {% for server in servers %}
+        <option value="{{server.pk}}">{{ server }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="form-group col-md-12">
+    <select id="projectSelect" name="project" class="form-control" required>
+    </select>
+  </div>
+  <div class="form-group col-md-12">
+    <select id="versionSelect" name="version" class="form-control" required>
+    </select>
+  </div>
+  <div class="form-group col-md-12">
+    <select id="spiderSelect" name="spider" class="form-control" required>
+    </select>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+<script type="text/javascript" src="{% static 'js/chained_dropdown.js' %}"></script>
+{% endblock %}

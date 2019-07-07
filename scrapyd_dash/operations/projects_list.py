@@ -1,5 +1,9 @@
 from concurrent.futures import ThreadPoolExecutor
-from ..models import ScrapydServer, ScrapydProject
+from ..models import (ScrapydServer,
+                      ScrapydProject,
+                      ScrapydProjectVersion)
+
+from .versions_list import versions_list
 import json
 import requests
 import asyncio
@@ -19,12 +23,20 @@ def projects_list(session, server):
             data = json.loads(response.text)
 
             for project in data.get("projects", []):
-                ScrapydProject.objects.update_or_create(
+                proj = ScrapydProject.objects.update_or_create(
                     server=server,
                     name=project
                 )
-    except:
-        pass
+
+                versions = versions_list(server, project)
+                for ver in versions:
+                    ScrapydProjectVersion.objects.create(
+                        version=ver,
+                        project=proj
+                    )
+
+    except Exception as e:
+        print(e)
 
 async def check_projects(servers):
     with ThreadPoolExecutor(max_workers=10) as executor:

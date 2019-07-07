@@ -18,7 +18,7 @@
                 </button>
                 </div>
                 <div class="modal-body">
-                    <form action="/add-server/" name="add_server_form" method="post" onsubmit="return ValidateIPaddress(document.add_server_form.server_ip);">
+                    <form action="" name="add_server_form" method="post" onsubmit="return ValidateIPaddress(document.add_server_form.server_ip);">
                         {% csrf_token %}
                         <div class="form-group">
                             <label for="server_ip">Server IP</label>
@@ -37,33 +37,33 @@
   </div>
 
 <div class="card shadow mb-4">
-	<div class="card-header py-3">
-	  <h6 class="m-0 font-weight-bold text-primary">Scrapyd Servers Table</h6>
-	</div>
-	<div class="card-body">
-	  <div class="table-responsive">
+    <div class="card-header py-3">
+      <h6 class="m-0 font-weight-bold text-primary">Scrapyd Servers Table</h6>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
         {% if servers %}
-    	    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-    	      <thead>
-    	        <tr>
-    	          <th>#</th>
-    	          <th>Status</th>
-    	          <th>Scrapyd IP</th>
-    	          <th>Scrapyd Port</th>
-    	          <th>Node Name</th>
-    	          <th>Tasks Pending</th>
-    	          <th>Tasks Running</th>
-    	          <th>Tasks Finished</th>
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Status</th>
+                  <th>Scrapyd IP</th>
+                  <th>Scrapyd Port</th>
+                  <th>Node Name</th>
+                  <th>Tasks Pending</th>
+                  <th>Tasks Running</th>
+                  <th>Tasks Finished</th>
                   <th>Actions</th>
-    	        </tr>
-    	      </thead>
-    	      <tbody>
-    	      	{% for server in servers %}
-    	          	<tr>
-    	              <td>{{ forloop.counter }}</td>
-    	              <td>
-        	              {% if server.status == "ok" %} 
-        	              	<span class="badge badge-success">ONLINE</span> {% else %} <span class="badge badge-danger">OFFLINE</span>
+                </tr>
+              </thead>
+              <tbody>
+                {% for server in servers %}
+                    <tr>
+                      <td>{{ forloop.counter }}</td>
+                      <td>
+                          {% if server.status == "ok" %} 
+                            <span class="badge badge-success">ONLINE</span> {% else %} <span class="badge badge-danger">OFFLINE</span>
 
                             <!-- Button trigger modal -->
                             <button type="button" class="btn btn-link" data-toggle="modal" data-target="#{{server.ip}}:{{server.port}}">Log</button>
@@ -89,20 +89,20 @@
                                 </div>
                               </div>
                             </div>
-        	              {% endif %}</td>
-    	              <td>{{server.ip}}</td>
-    	              <td>{{server.port}}</td>
-    	              {% if server.status == "ok" %} 
-    	              <td>{{server.node_name}}</td>
-    	              <td><span class="badge badge-pill badge-info">{{server.pending_tasks}}</span></td>
-    	              <td><span class="badge badge-pill badge-warning">{{server.running_tasks}}</span></td>
-    	              <td><span class="badge badge-pill badge-success">{{server.finished_tasks}}</span></td>
-    	              {% else %}
-    	              <td></td>
-    	              <td></td>
-    	              <td></td>
-    	              <td></td>
-    	              {% endif %}
+                          {% endif %}</td>
+                      <td>{{server.ip}}</td>
+                      <td>{{server.port}}</td>
+                      {% if server.status == "ok" %} 
+                      <td>{{server.node_name}}</td>
+                      <td><span class="badge badge-pill badge-info">{{server.pending_tasks}}</span></td>
+                      <td><span class="badge badge-pill badge-warning">{{server.running_tasks}}</span></td>
+                      <td><span class="badge badge-pill badge-success">{{server.finished_tasks}}</span></td>
+                      {% else %}
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      {% endif %}
                       <td>
                         <button type="submit" class="btn btn-danger btn-sm"  data-toggle="modal" data-target="#delete{{server.ip}}:{{server.port}}"><b>Delete</b></button>
                         <div class="modal fade" id="delete{{server.ip}}:{{server.port}}" tabindex="-1" role="dialog" aria-labelledby="deleteServerModalLabel" aria-hidden="true">
@@ -116,10 +116,11 @@
                                     </button>
                                     </div>
                                     <div class="modal-body">
-                                        <form action="/delete-server/" method="post">
+                                        <form action="" method="post">
                                             {% csrf_token %}
                                             <input type="text" name="server_ip" value="{{server.ip}}" hidden>
                                             <input type="text" name="server_port" value="{{server.port}}" hidden>
+                                            <input type="hidden" name="_method" value="delete">
                                             <div class="form-group">
                                               Are you sure you want to delete server <b>{{server.ip}}:{{server.port}}</b>
                                             </div>
@@ -130,15 +131,15 @@
                             </div>
                         </div>
                       </td>
-    	            </tr>
-    	      	{% endfor %}
-    	      </tbody>
-    	    </table>
+                    </tr>
+                {% endfor %}
+              </tbody>
+            </table>
         {% else %}
             <b>There are no servers.</b>
         {% endif %}
-	  </div>
-	</div>
+      </div>
+    </div>
 </div>
 
 {% endblock %}

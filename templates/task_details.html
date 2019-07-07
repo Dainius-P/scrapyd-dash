@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ task.id }}{% endblock %}
+
+{% block body %}
+<div class="d-flex align-items-center p-3 my-3 text-white-50 rounded shadow-sm" style="background-color: #4e73df;">
+  <img class="mr-3" src="{% static 'images/task_logo.png' %}" alt="" width="48" height="48">
+  <div class="lh-100">
+    <h6 class="mb-0 text-white lh-100">Task Nr. <b>{{ task.id }}</b></h6>
+    <small>
+    	{% if task.status == "running" %}
+      	<span class="badge badge-pill badge-warning"><b>{{ task.status }}</b></span>
+      {% elif task.status == "pending" %}
+          <span class="badge badge-pill badge-info"><b>{{ task.status }}</b></span>
+      {% else %}
+          <span class="badge badge-pill badge-success"><b>{{ task.status }}</b></span>
+      {% endif %}
+    </small>
+  </div>
+</div>
+<h3>Details</h3>
+<div class="row">
+  <div class="col-md-2">
+    <div class="card border-dark mb-3" style="max-width: 18rem;">
+      <div class="card-body text-dark">
+        <h5 class="card-title">Pages</h5>
+        <hr>
+        <p class="card-text"><b>{{log.pages}}</b></p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-2"><div class="card border-dark mb-3" style="max-width: 18rem;">
+      <div class="card-body text-dark">
+        <h5 class="card-title">Items</h5>
+        <hr>
+        <p class="card-text"><b>{{log.items}}</b></p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-2"><div class="card border-dark mb-3" style="max-width: 18rem;">
+      <div class="card-body text-dark">
+        <h5 class="card-title">Shutdown Reason</h5>
+        <hr>
+        <p class="card-text"><b>{{log.shutdown_reason}}</b></p>
+      </div>
+    </div>
+  </div>
+    <div class="col-md-2"><div class="card border-dark mb-3" style="max-width: 18rem;">
+      <div class="card-body text-dark">
+        <h5 class="card-title">Finish Reason</h5>
+        <hr>
+        <p class="card-text"><b>{{log.finish_reason}}</b></p>
+      </div>
+    </div>
+  </div>
+      <div class="col-md-2"><div class="card border-dark mb-3" style="max-width: 18rem;">
+      <div class="card-body text-dark">
+        <h5 class="card-title">Total time running</h5>
+        <hr>
+        <p class="card-text"><b>{{log.runtime}}</b></p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

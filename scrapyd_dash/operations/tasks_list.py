@@ -20,6 +20,7 @@ def tasks_list(session, server, project):
     full_url = "http://{}:{}/listjobs.json?project={}".format(server.ip,
                                                               server.port,
                                                               project.name)
+
     timeout = 5
     tasks = []
     status = ["finished", "pending", "running"]
@@ -55,6 +56,14 @@ def save_tasks(tasks):
             else:
                 runtime = datetime.now() - start_date
 
+            log_href = "http://{}:{}/logs/{}/{}/{}.json".format(
+                task.get("server").ip,
+                task.get("server").port,
+                task.get("project").name,
+                j.get("spider"),
+                j.get("id")
+            )
+
             Task.objects.update_or_create(
                 id=j.get("id"),
                 defaults={
@@ -65,7 +74,8 @@ def save_tasks(tasks):
                     "spider": j.get("spider"),
                     "start_datetime": start_time,
                     "finished_datetime": end_time,
-                    "runtime": str(runtime).split('.')[0]
+                    "runtime": str(runtime).split('.')[0],
+                    "log_href": log_href
                 }
             )
 

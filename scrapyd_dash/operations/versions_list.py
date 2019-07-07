@@ -9,7 +9,9 @@ and specific project
 -project = project name
 """
 def versions_list(server, project="default"):
-	full_url = "http://{}/listversions.json?project={}".format(server, project)
+	full_url = "http://{}:{}/listversions.json?project={}".format(server.ip,
+																  server.port,
+																  project)
 	timeout = 5
 
 	with requests.Session() as session:

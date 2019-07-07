@@ -3,4 +3,8 @@
 {% block title %}Scheduled Tasks{% endblock %}
 
 {% block body %}
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Scheduled Tasks</h1>
+    <a href="{% url 'add_scheduled_task' %}"><button type="button" class="btn btn-secondary" >SCHEDULE NEW TASK</button></a>
+  </div>
 {% endblock %}
