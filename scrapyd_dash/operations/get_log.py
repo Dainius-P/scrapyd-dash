@@ -10,4 +10,4 @@ def get_log(href):
 		with requests.get(href, timeout=timeout) as r:
 			return r.json()
 	except:
-		raise Exception("Log for this task does not exist") 
+		raise Exception("LogParser server does not respond") 

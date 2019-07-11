@@ -15,7 +15,7 @@ from django.views import View
 from rest_framework.decorators import api_view
 from .serializers import *
 
-class ServersView(View):
+class ServersListView(View):
     template_view = "servers.html"
 
     """
@@ -26,7 +26,7 @@ class ServersView(View):
         method = self.request.POST.get('_method', '').lower()
         if method == 'delete':
             return self.delete(*args, **kwargs)
-        return super(ServersView, self).dispatch(*args, **kwargs)
+        return super(ServersListView, self).dispatch(*args, **kwargs)
 
     """
     Retrieve list of scrapyd servers
@@ -234,22 +234,23 @@ class TaskDetailsView(View):
 
         try:
             task = Task.objects.get(id=pk)
-
-            log = get_log(task.log_href)
-
-            return render(request,
-                          self.template_view,
-                          {"task": task,
-                           "log": log})
-
         except Task.DoesNotExist:
             message = "Task with id: {} does not exist".format(pk)
             messages.error(request, message)
+
+            return HttpResponseRedirect(reverse('tasks'))
+
+        try:
+            log = get_log(task.log_href)
         except Exception as e:
             messages.error(request, e)
+            return HttpResponseRedirect(reverse('tasks'))
 
-        return HttpResponseRedirect(reverse('tasks'))
 
+        return render(request,
+                      self.template_view,
+                      {"task": task,
+                       "log": log})
     """
     Deletes task
     If the task is pending/finished, it will be removed. 
@@ -284,20 +285,3 @@ class TaskDetailsView(View):
             messages.error(request, message)
 
         return HttpResponseRedirect(reverse('tasks'))
-
-class ScheduledTasksView(View):
-
-    def get(self, request, *args, **kwags):
-        tasks = ScheduledTasks.objects.filter(deleted=False)
-
-        return render(request, "scheduled_tasks.html", {"tasks": tasks})
-
-class ScheduledTasksAddView(View):
-    template_view = "scheduled_tasks_add.html"
-
-    def get(self, request, *args, **kwargs):
-        servers = ScrapydServer.objects.filter(status="ok")
-
-        return render(request,
-                      self.template_view,
-                      {"servers": servers})
