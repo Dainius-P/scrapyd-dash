@@ -19,17 +19,24 @@ A dashboard specifically used for scrapyd servers to manipulate scrapy spiders (
 pip install scrapyd-dash
 ```
 
-## Built With
+### Built With
 
 * [Django](https://www.djangoproject.com/) - The web framework used
 * [ScrapyD](https://github.com/scrapy/scrapyd) - A service daemon to run Scrapy spiders
 
-## Authors
+### Authors
 
 * **Dainius Preimantas** - *Initial work* - [Dainius-P](https://github.com/Dainius-P)
 
-See also the list of [contributors](https://github.com/Dainius-P/scrapyd-dash/CONTRIBUTING.md) who participated in this project.
+### Contributing
 
-## License
+ Markup : 1. Fork it
+          2. Create your feature branch (```git checkout -b feature/fooBar```)
+          3. Commit your changes (```git commit -am 'Add some fooBar'```)
+          4. Push to the branch (```git push origin feature/fooBar```)
+          5. Create a new Pull Request
+
+
+### License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
