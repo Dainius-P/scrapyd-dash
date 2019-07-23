@@ -8,6 +8,10 @@ A dashboard specifically used for scrapyd servers to manipulate scrapy spiders (
 - [x] Tasks (add, remove, list)
 - [ ] Scheduled tasks (add, remove, list)
 
+### Demo
+
+[Demo website](https://www.example.com)
+
 ### Installing
 
 
@@ -24,7 +28,7 @@ pip install scrapyd-dash
 
 * **Dainius Preimantas** - *Initial work* - [Dainius-P](https://github.com/Dainius-P)
 
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+See also the list of [contributors](https://github.com/Dainius-P/scrapyd-dash/CONTRIBUTING.md) who participated in this project.
 
 ## License
 
