@@ -3,43 +3,54 @@
 {% block title %}Servers{% endblock %}
 
 {% block body %}
-  <div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-800">Servers</h1>
-    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#AddServerModal">ADD SERVER</button>
-
-    <div class="modal fade" id="AddServerModal" tabindex="-1" role="dialog" aria-labelledby="addServerModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                <h5 class="modal-title" id="addServerModalLabel">
-                <b>Add new ScrapydServer</b></h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-                </button>
-                </div>
-                <div class="modal-body">
-                    <form action="" name="add_server_form" method="post" onsubmit="return ValidateIPaddress(document.add_server_form.server_ip);">
-                        {% csrf_token %}
-                        <div class="form-group">
-                            <label for="server_ip">Server IP</label>
-                            <input type="text" class="form-control" name="server_ip" placeholder="Scrapyd Server IP" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="server_port">Server Port</label>
-                            <input type="number" max="65535" min="0" class="form-control" name="server_port" placeholder="Scrapyd Server Port" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </form>
-                </div>
+<div class="breadcrumbs">
+    <div class="col-sm-4">
+        <div class="page-header float-left">
+            <div class="page-title">
+                <h1>Servers</h1>
             </div>
         </div>
     </div>
-  </div>
+    <div class="col-sm-8">
+        <div class="page-header float-right">
+            <div class="page-title">
+                <ol class="breadcrumb text-right">
+                    <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#AddServerModal">ADD SERVER</button>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="AddServerModal" tabindex="-1" role="dialog" aria-labelledby="addServerModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="addServerModalLabel">
+            <b>Add new ScrapydServer</b></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                <form action="" name="add_server_form" method="post" onsubmit="return ValidateIPaddress(document.add_server_form.server_ip);">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="server_ip">Server IP</label>
+                        <input type="text" class="form-control" name="server_ip" placeholder="Scrapyd Server IP" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="server_port">Server Port</label>
+                        <input type="number" max="65535" min="0" class="form-control" name="server_port" placeholder="Scrapyd Server Port" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="card shadow mb-4">
-    <div class="card-header py-3">
-      <h6 class="m-0 font-weight-bold text-primary">Scrapyd Servers Table</h6>
-    </div>
     <div class="card-body">
       <div class="table-responsive">
         {% if servers %}
@@ -48,8 +59,7 @@
                 <tr>
                   <th>#</th>
                   <th>Status</th>
-                  <th>Scrapyd IP</th>
-                  <th>Scrapyd Port</th>
+                  <th>Scrapyd Address</th>
                   <th>Node Name</th>
                   <th>Tasks Pending</th>
                   <th>Tasks Running</th>
@@ -60,16 +70,16 @@
               <tbody>
                 {% for server in servers %}
                     <tr>
-                      <td>{{ forloop.counter }}</td>
+                      <th scope="row">{{ forloop.counter }}</th>
                       <td>
                           {% if server.status == "ok" %} 
                             <span class="badge badge-success">ONLINE</span> {% else %} <span class="badge badge-danger">OFFLINE</span>
 
                             <!-- Button trigger modal -->
-                            <button type="button" class="btn btn-link" data-toggle="modal" data-target="#{{server.ip}}:{{server.port}}">Log</button>
+                            <button type="button" class="btn btn-link" data-toggle="modal" data-target="#log{{server}}">Log</button>
 
                             <!-- Modal -->
-                            <div class="modal fade" id="{{server.ip}}:{{server.port}}" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
+                            <div class="modal fade" id="log{{server}}" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
                               <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                   <div class="modal-header">
@@ -90,8 +100,7 @@
                               </div>
                             </div>
                           {% endif %}</td>
-                      <td>{{server.ip}}</td>
-                      <td>{{server.port}}</td>
+                      <td>{{server.ip}}:{{server.port}}</td>
                       {% if server.status == "ok" %} 
                       <td>{{server.node_name}}</td>
                       <td><span class="badge badge-pill badge-info">{{server.pending_tasks}}</span></td>
@@ -104,8 +113,8 @@
                       <td></td>
                       {% endif %}
                       <td>
-                        <button type="submit" class="btn btn-danger btn-sm"  data-toggle="modal" data-target="#delete{{server.ip}}:{{server.port}}"><b>Delete</b></button>
-                        <div class="modal fade" id="delete{{server.ip}}:{{server.port}}" tabindex="-1" role="dialog" aria-labelledby="deleteServerModalLabel" aria-hidden="true">
+                        <button type="submit" class="btn btn-danger btn-sm"  data-toggle="modal" data-target="#delete{{server}}"><b>Delete</b></button>
+                        <div class="modal fade" id="delete{{server}}" tabindex="-1" role="dialog" aria-labelledby="deleteServerModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -139,6 +148,32 @@
             <b>There are no servers.</b>
         {% endif %}
       </div>
+      {% if servers %}
+        <nav aria-label="Page navigation example">
+          <ul class="pagination justify-content-center">
+            <li class="page-item">
+            {% if servers.has_previous %}
+              <li class="page-item">
+                <a class="page-link" href="?page=1">&laquo; first</a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" href="?page={{ servers.previous_page_number }}">previous</a>
+              </li>
+            {% endif %}
+
+            <li class="page-item disabled"><a class="page-link" href="#">Page {{ servers.number }} of {{ servers.paginator.num_pages }}</a></li>
+
+            {% if servers.has_next %}
+              <li class="page-item">
+                <a class="page-link" href="?page={{ servers.next_page_number }}">Next</a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" href="?page={{ servers.paginator.num_pages }}">Last &raquo;</a>
+              </li>
+            {% endif %}
+          </ul>
+        </nav>
+      {% endif %}
     </div>
 </div>
 

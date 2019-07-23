@@ -13,7 +13,8 @@ class ScrapydServer(models.Model):
     running_tasks = models.PositiveIntegerField(default=0)
 
     def __str__(self):
-        return "%s:%s" % (self.ip, self.port)
+        return "%s%s" % (self.ip.replace('.', ''),
+                         self.port.replace('.', ''))
 
     class Meta:
         unique_together = (("ip", "port"),)
@@ -74,8 +75,20 @@ class Task(models.Model):
 
     deleted = models.BooleanField(null=False, default=False)
 
+    """
+    Prints out start datetime in a custom format
+    """
+    def print_start(self):
+        return self.start_datetime.strftime('%Y-%m-%d %H:%M')
+
+    """
+    Prints out finished datetime in a custom format
+    """
+    def print_finish(self):
+        return self.finished_datetime.strftime('%Y-%m-%d %H:%M')
+
     class Meta:
-        ordering = ['-create_datetime']
+        ordering = ['-create_datetime', '-status']
         db_table = 'scrapyd_dash_tasks'
 
 class ScheduledTasks(models.Model):

@@ -1,4 +1,3 @@
-
 //Scroll to the top button
 $(document).ready(function(){ 
     $(window).scroll(function(){ 

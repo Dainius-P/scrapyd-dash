@@ -1,13 +1,15 @@
 from django.shortcuts import render
+from django.core.paginator import Paginator
 from .models import ScrapydServer, Task, ScrapydProject, ScrapydProjectVersion, ScheduledTasks
-from .operations.check_servers import update_servers
 from .operations.projects_list import update_projects
 from .operations.spiders_list import spiders_list
 from .operations.tasks_cancel import cancel_task
 from .operations.get_log import get_log
 from .operations.tasks_add import add_task
+from .operations.check_servers import update_servers
 from .operations.tasks_list import update_tasks
 from django.http import HttpResponseRedirect, JsonResponse
+from django.core.paginator import Paginator
 from django.contrib import messages
 from django.urls import reverse, reverse_lazy
 from django.db import IntegrityError
@@ -32,14 +34,15 @@ class ServersListView(View):
     Retrieve list of scrapyd servers
     """
     def get(self, request, *args, **kwargs):
-        update_servers()
-        update_projects()
-
         servers_list = ScrapydServer.objects.all()
+        pagi = Paginator(servers_list, 10) # Show 10 servers
+
+        page = request.GET.get('page')
+        servers = pagi.get_page(page)
 
         return render(request,
                       self.template_view,
-                      {"servers": servers_list})
+                      {"servers": servers})
 
     """
     Add scrapyd server
@@ -56,7 +59,9 @@ class ServersListView(View):
                 port=server_port
             )
 
+            update_servers()
             update_projects()
+            update_tasks()
 
             message = "Server {}:{} successfully added".format(
                 server_ip,
@@ -113,7 +118,7 @@ class ServersListView(View):
         return HttpResponseRedirect(reverse('servers'))
 
 """
-View dedicated for showing tasks in a table and creating a task
+View dedicated for showing tasks in a table and creating new tasks
 """
 class TasksListView(View):
     template_view = "tasks.html"
@@ -122,24 +127,22 @@ class TasksListView(View):
     Revtrieves list of tasks
     """
     def get(self, request, *args, **kwargs):
-        update_tasks()
+        tasks_list = Task.objects.filter(deleted=False)
+        pagi = Paginator(tasks_list, 10) # Show 10 tasks
 
-        tasks = Task.objects.filter(deleted=False)
+        page = request.GET.get('page')
+        tasks = pagi.get_page(page)
 
-        return render(request,
-                      self.template_view,
-                      {"tasks": tasks})
-
-class TasksAddView(View):
-    template_view = "tasks_add.html"
-
-    def get(self, request, *args, **kwargs):
         servers = ScrapydServer.objects.filter(status="ok")
 
         return render(request,
                       self.template_view,
-                      {"servers": servers})
+                      {"tasks": tasks,
+                       "servers": servers})
 
+    """
+    Add a new task
+    """
     def post(self, request, *args, **kwargs):
         data = request.POST
 
@@ -244,6 +247,7 @@ class TaskDetailsView(View):
             log = get_log(task.log_href)
         except Exception as e:
             messages.error(request, e)
+
             return HttpResponseRedirect(reverse('tasks'))
 
 

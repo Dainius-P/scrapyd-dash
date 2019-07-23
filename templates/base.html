@@ -1,135 +1,108 @@
 {% load static %}
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="en">
+<!--<![endif]-->
 
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <title>Scrapyd Dashboard - {% block title %}{% endblock title %}</title>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Scrapyd Dash - {% block title %}{% endblock %}</title>
+    <meta name="description" content="Scrapyd Dash - Scrapy dashboard using scrapyd and logparser">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript" src="{% static 'js/bootstrap-notify.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/script.js' %}"></script>
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.css">
 
-         <!-- Bootstrap CSS -->
-        <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}">
-        <link rel="stylesheet" type="text/css" href="{% static 'css/animate.css' %}">
-        <!-- Custom styles for this template-->
-        <link rel="stylesheet" type="text/css" href="{% static 'css/sb-admin-2.min.css' %}">
-        <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'vendors/bootstrap/dist/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'vendors/font-awesome/css/font-awesome.min.css' %}">
 
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-        <script type="text/javascript" src="{% static 'js/bootstrap-notify.min.js' %}"></script>
-        <script src="https://kit.fontawesome.com/32b20ea39a.js"></script>
-        <script type="text/javascript" src="{% static 'js/script.js' %}"></script>
-        <script type="text/javascript" src="{% static 'js/pace.js' %}"></script>
 
-        {% block head %}
-        {% endblock %}
-    </head>
-<body id="page-top">
-  {% if messages %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
+
+</head>
+
+<body>
+
+    {% if messages %}
       {% for message in messages %}
         <script>django_messages("{{message}}", "{{message.tags}}");</script>
       {% endfor %}
-  {% endif %}
+    {% endif %}
 
-  <div id="pace"></div>
 
-  <!-- Page Wrapper -->
-  <div id="wrapper">
+    <!-- Left Panel -->
 
-    <!-- Sidebar -->
-    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+    <aside id="left-panel" class="left-panel">
+        <nav class="navbar navbar-expand-sm navbar-default">
 
-      <!-- Sidebar - Brand -->
-      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{% url 'servers' %}">
-        <div class="sidebar-brand-text mx-3">Scrapyd Dash</div>
-      </a>
+            <div class="navbar-header">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-menu" aria-controls="main-menu" aria-expanded="false" aria-label="Toggle navigation">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <a class="navbar-brand" href="{% url 'servers' %}">Scrapyd Dash</a>
+                <a class="navbar-brand hidden" href="{% url 'servers' %}">SD</a>
+            </div>
 
-      <!-- Divider -->
-      <hr class="sidebar-divider my-0">
-
-      <div class="sidebar-heading">
-        Overview
-      </div>
-
-      <!-- Nav Item - Dashboard -->
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'servers' %}" onclick="showLoader()">
-          <i class="fas fa-fw fa-tachometer-alt"></i>
-          <span><b>Servers</b></span></a>
-      </li>
-
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'tasks' %}" onclick="showLoader()">
-          <i class="fas fa-tasks"></i>
-          <span><b>Tasks</b></span></a>
-      </li>
-
-      <!-- Divider -->
-      <hr class="sidebar-divider d-none d-md-block">
-
-      <div class="sidebar-heading">
-        Readme
-      </div>
-
-    </ul>
-    <!-- End of Sidebar -->
-
-    <!-- Content Wrapper -->
-    <div id="content-wrapper" class="d-flex flex-column">
-
-      <!-- Main Content -->
-      <div id="content">
-
-        <!-- Topbar -->
-        <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-
-          <!-- Sidebar Toggle (Topbar) -->
-          <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-            <i class="fa fa-bars"></i>
-          </button>
-
+            <div id="main-menu" class="main-menu collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a href="{% url 'servers' %}"> <i class="menu-icon fa fa-server"></i>Scrapyd Servers</a>
+                    </li>
+                    <li>
+                         <a href="{% url 'tasks' %}" > <i class="menu-icon fa fa-tasks"></i>Tasks</a>
+                    </li>
+                    <li>
+                        <h3 class="menu-title">Extras</h3>
+                    </li>
+                    <li>
+                        <div class="social">
+                            <a href="https://github.com/Dainius-P/scrapyd-dash"><i class="fa fa-github fa-2x" class="github"></i></a>
+                        </div>
+                    </li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
         </nav>
-        <!-- End of Topbar -->
+    </aside><!-- /#left-panel -->
 
-        <!-- Begin Page Content -->
-        <div class="container-fluid">
+    <!-- Left Panel -->
+
+    <!-- Right Panel -->
+
+    <div id="right-panel" class="right-panel">
+
+        <!-- Header-->
+        <header id="header" class="header">
+
+            <div class="header-menu">
+
+                <div class="col-sm-7">
+                    <a id="menuToggle" class="menutoggle pull-left"><i class="fa fa fa-tasks"></i></a>
+                </div>
+            </div>
+
+        </header><!-- /header -->
+        <!-- Header-->
+        <div class="content">
           {% block body %}
           {% endblock %}
         </div>
-        <!-- /.container-fluid -->
+        </div> <!-- .content -->
+    </div><!-- /#right-panel -->
 
-      </div>
-      <!-- End of Main Content -->
+    <!-- Right Panel -->
 
-      <!-- Footer -->
-      <footer class="sticky-footer bg-white">
-        <div class="container my-auto">
-          <div class="copyright text-center my-auto">
-            <span>Copyright &copy; Scrapyd-Dash 2019</span>
-          </div>
-        </div>
-      </footer>
-      <!-- End of Footer -->
+    <script src="{% static 'vendors/jquery/dist/jquery.min.js' %}"></script>
+    <script src="{% static 'vendors/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.js"></script>
+</body>
 
-    </div>
-    <!-- End of Content Wrapper -->
-
-  </div>
-  <!-- End of Page Wrapper -->
-
-  <!-- Scroll to Top Button-->
-  <a class="scroll-to-top rounded" href="#page-top">
-    <i class="fas fa-angle-up"></i>
-  </a>
-    <script src="{% static 'js/sb-admin-2.min.js' %}"></script>
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
-      <script type="text/javascript" src="{% static 'js/dataTables.bootstrap4.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
-    <script type="text/javascript">
-        // Call the dataTables jQuery plugin
-  $(document).ready(function() {
-    $('#dataTable').DataTable();
-  });
-  </script>
-  </body>
 </html>
