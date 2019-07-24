@@ -86,13 +86,45 @@
                 <div class="col-sm-7">
                     <a id="menuToggle" class="menutoggle pull-left"><i class="fa fa fa-tasks"></i></a>
                 </div>
+                {% if user.is_authenticated %}
+                    <div class="col-sm-5">
+                        <div class="user-area dropdown float-right">
+                            <a href="{% url 'logout' %}">
+                                Log out
+                            </a>
+                        </div>
+                    </div>
+                {% endif %}
             </div>
 
         </header><!-- /header -->
         <!-- Header-->
         <div class="content">
-          {% block body %}
-          {% endblock %}
+            {% if user.is_authenticated %}
+                {% block body %}
+                {% endblock %}
+            {% else %}
+                <div class="sufee-login d-flex align-content-center flex-wrap">
+                    <div class="container">
+                        <div class="login-content">
+                            <div class="login-form">
+                                <form method="POST" action="/login/">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label>Username</label>
+                                        <input type="text" name="username" class="form-control" placeholder="Username" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Password</label>
+                                        <input type="password" name="password" class="form-control" placeholder="Password" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-success btn-flat m-b-30 m-t-30">Sign in</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
         </div>
         </div> <!-- .content -->
     </div><!-- /#right-panel -->

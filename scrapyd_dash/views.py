@@ -16,6 +16,7 @@ from django.db import IntegrityError
 from django.views import View
 from rest_framework.decorators import api_view
 from .serializers import *
+from django.contrib.auth import authenticate, login, logout
 
 class ServersListView(View):
     template_view = "servers.html"
@@ -61,7 +62,6 @@ class ServersListView(View):
 
             update_servers()
             update_projects()
-            update_tasks()
 
             message = "Server {}:{} successfully added".format(
                 server_ip,
@@ -179,7 +179,6 @@ class TasksListView(View):
 
         return HttpResponseRedirect(reverse('tasks'))
 
-@api_view(['GET'])
 def get_projects(request):
     if request.method == 'GET':
         server = request.GET.get('server')
@@ -189,7 +188,6 @@ def get_projects(request):
 
         return JsonResponse(ser.data, safe=False)
 
-@api_view(['GET'])
 def get_versions(request):
     if request.method == 'GET':
         project = request.GET.get('project')
@@ -200,7 +198,6 @@ def get_versions(request):
 
         return JsonResponse(ser.data, safe=False)
 
-@api_view(['GET'])
 def get_spiders(request):
     if request.method == 'GET':
         project_pk = request.GET.get('project')
@@ -213,6 +210,41 @@ def get_spiders(request):
         spiders = spiders_list(server, project)
 
         return JsonResponse(spiders, safe=False)
+
+"""
+View for logging in
+"""
+def login_view(request):
+    if request.method == "POST":
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            message = "Hello %s. You Successfully logged in" % (username)
+            messages.success(request, message)
+
+        else:
+            message = "Invalid login"
+            messages.error(request, message)
+
+    return HttpResponseRedirect(reverse('servers'))
+
+"""
+View for logging out
+"""
+def logout_view(request):
+    if request.user.is_authenticated:
+        try:
+            logout(request)
+            message = "You Successfully logged out"
+            messages.success(request, message)
+        except:
+            message = "Something went wrong"
+            messages.error(request, message)
+
+    return HttpResponseRedirect(reverse('servers'))
+
 
 """
 View dedicated for task details

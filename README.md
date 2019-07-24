@@ -6,8 +6,10 @@ A dashboard specifically used for scrapyd servers to manipulate scrapy spiders (
 
 - [x] Scrapyd server status
 - [x] Tasks (add, remove, list)
-- [ ] Authentification
+- [x] Authentification (Using the Django authentication system)
 - [ ] Scheduled tasks (add, remove, list)
+- [ ] Multi user support
+- [ ] Task performance details
 
 ### Demo
 
@@ -15,10 +17,24 @@ A dashboard specifically used for scrapyd servers to manipulate scrapy spiders (
 
 ### Installing
 
+1. Install the package
 
 ```
-pip install scrapyd-dash
+pip install scrapyd_dash
 ```
+
+2.Add urls to your projects urls.py
+
+```
+from django.urls import include
+
+urlpatterns = [
+    ...
+    path('scrapyd_dash/', include('scrapyd_dash.urls')),
+]
+
+```
+
 
 ### Built With
 
@@ -31,13 +47,13 @@ pip install scrapyd-dash
 
 ### Contributing
 
- Markup : 1. Fork it
-          2. Create your feature branch (```git checkout -b feature/fooBar```)
-          3. Commit your changes (```git commit -am 'Add some fooBar'```)
-          4. Push to the branch (```git push origin feature/fooBar```)
-          5. Create a new Pull Request
+1. Fork it
+2. Create your feature branch (```git checkout -b feature/fooBar```)
+3. Commit your changes (```git commit -am 'Add some fooBar'```)
+4. Push to the branch (```git push origin feature/fooBar```)
+5. Create a new Pull Request
 
 
 ### License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details

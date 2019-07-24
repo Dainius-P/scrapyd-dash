@@ -88,7 +88,7 @@ class Task(models.Model):
         return self.finished_datetime.strftime('%Y-%m-%d %H:%M')
 
     class Meta:
-        ordering = ['-create_datetime', '-status']
+        ordering = ['-create_datetime']
         db_table = 'scrapyd_dash_tasks'
 
 class ScheduledTasks(models.Model):
