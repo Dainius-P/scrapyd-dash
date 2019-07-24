@@ -6,6 +6,7 @@ A dashboard specifically used for scrapyd servers to manipulate scrapy spiders (
 
 - [x] Scrapyd server status
 - [x] Tasks (add, remove, list)
+- [ ] Authentification
 - [ ] Scheduled tasks (add, remove, list)
 
 ### Demo
