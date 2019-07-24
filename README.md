@@ -23,7 +23,7 @@ A dashboard specifically used for scrapyd servers to manipulate scrapy spiders (
 pip install scrapyd_dash
 ```
 
-2.Add urls to your projects urls.py
+2. Add urls to your projects urls.py
 
 ```
 from django.urls import include
@@ -56,4 +56,4 @@ urlpatterns = [
 
 ### License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
