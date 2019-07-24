@@ -14,7 +14,6 @@ from django.contrib import messages
 from django.urls import reverse, reverse_lazy
 from django.db import IntegrityError
 from django.views import View
-from rest_framework.decorators import api_view
 from .serializers import *
 from django.contrib.auth import authenticate, login, logout
 

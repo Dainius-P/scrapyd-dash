@@ -4,63 +4,95 @@
 {% block title %}{{ task.id }}{% endblock %}
 
 {% block body %}
-<div class="d-flex align-items-center p-3 my-3 text-white-50 rounded shadow-sm" style="background-color: #4e73df;">
-  <img class="mr-3" src="{% static 'images/task_logo.png' %}" alt="" width="48" height="48">
-  <div class="lh-100">
-    <h6 class="mb-0 text-white lh-100">Task Nr. <b>{{ task.id }}</b></h6>
-    <small>
-    	{% if task.status == "running" %}
-      	<span class="badge badge-pill badge-warning"><b>{{ task.status }}</b></span>
-      {% elif task.status == "pending" %}
-          <span class="badge badge-pill badge-info"><b>{{ task.status }}</b></span>
-      {% else %}
-          <span class="badge badge-pill badge-success"><b>{{ task.status }}</b></span>
-      {% endif %}
-    </small>
-  </div>
+<div class="breadcrumbs" style="background-color: #272c33;">
+    <div class="col-sm-4">
+        <div class="page-header float-left" style="background-color: #272c33; color: white;">
+            <div class="page-title">
+                <h1>Task Nr. <b>{{ task.id }}</b></h1>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-8">
+        <div class="page-header float-right" style="background-color: #272c33;">
+            <div class="page-title">
+                <ol class="breadcrumb text-right" style="background-color: #272c33;">
+                  <h5>
+                  {% if task.status == "running" %}
+                    <span class="badge badge-pill badge-warning"><b>{{ task.status }}</b></span>
+                  {% elif task.status == "pending" %}
+                      <span class="badge badge-pill badge-info"><b>{{ task.status }}</b></span>
+                  {% else %}
+                      <span class="badge badge-pill badge-success"><b>{{ task.status }}</b></span>
+                  {% endif %}
+                </h5>
+                </ol>
+            </div>
+        </div>
+    </div>
 </div>
-<h3>Details</h3>
-<div class="row">
-  <div class="col-md-2">
-    <div class="card border-dark mb-3" style="max-width: 18rem;">
-      <div class="card-body text-dark">
-        <h5 class="card-title">Pages</h5>
-        <hr>
-        <p class="card-text"><b>{{log.pages}}</b></p>
+
+<div class="card shadow mb-4">
+    <div class="card-body">
+      <h3>Details</h3>
+      <hr>
+      <div class="col-sm-12 mb-4">
+        <div class="card-group">
+          <div class="card col-md-6 no-padding ">
+            <div class="card-body">
+              <div class="h1 text-muted text-right mb-4">
+                <i class="fa fa-file"></i>
+              </div>
+              <div class="h4 mb-0">
+                <span class="count">{{log.pages}}</span>
+              </div>
+              <small class="text-muted text-uppercase font-weight-bold">Pages</small>
+              <div class="progress progress-xs mt-3 mb-0 bg-flat-color-1" style="width: 40%; height: 5px;"></div>
+            </div>
+          </div>
+          <div class="card col-md-6 no-padding ">
+            <div class="card-body">
+              <div class="h1 text-muted text-right mb-4">
+                <i class="fa fa-sitemap"></i>
+              </div>
+              <div class="h4 mb-0">
+                <span class="count">{{log.items}}</span>
+              </div>
+              <small class="text-muted text-uppercase font-weight-bold">Items</small>
+              <div class="progress progress-xs mt-3 mb-0 bg-flat-color-2" style="width: 40%; height: 5px;"></div>
+            </div>
+          </div>
+          <div class="card col-md-6 no-padding ">
+            <div class="card-body">
+              <div class="h1 text-muted text-right mb-4">
+                <i class="fa fa-power-off"></i>
+              </div>
+              <div class="h4 mb-0">{{log.shutdown_reason}}</div>
+              <small class="text-muted text-uppercase font-weight-bold">Shutdown Reason</small>
+              <div class="progress progress-xs mt-3 mb-0 bg-flat-color-3" style="width: 40%; height: 5px;"></div>
+            </div>
+          </div>
+          <div class="card col-md-6 no-padding ">
+            <div class="card-body">
+              <div class="h1 text-muted text-right mb-4">
+                <i class="fa fa-flag-checkered"></i>
+              </div>
+              <div class="h4 mb-0">{{log.finish_reason}}</div>
+              <small class="text-muted text-uppercase font-weight-bold">Finish Reason</small>
+              <div class="progress progress-xs mt-3 mb-0 bg-flat-color-4" style="width: 40%; height: 5px;"></div>
+            </div>
+          </div>
+          <div class="card col-md-6 no-padding ">
+            <div class="card-body">
+              <div class="h1 text-muted text-right mb-4">
+                <i class="fa fa-clock-o"></i>
+              </div>
+              <div class="h4 mb-0">{{log.runtime}}</div>
+              <small class="text-muted text-uppercase font-weight-bold">Total Time Running</small>
+              <div class="progress progress-xs mt-3 mb-0 bg-flat-color-5" style="width: 40%; height: 5px;"></div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="col-md-2"><div class="card border-dark mb-3" style="max-width: 18rem;">
-      <div class="card-body text-dark">
-        <h5 class="card-title">Items</h5>
-        <hr>
-        <p class="card-text"><b>{{log.items}}</b></p>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-2"><div class="card border-dark mb-3" style="max-width: 18rem;">
-      <div class="card-body text-dark">
-        <h5 class="card-title">Shutdown Reason</h5>
-        <hr>
-        <p class="card-text"><b>{{log.shutdown_reason}}</b></p>
-      </div>
-    </div>
-  </div>
-    <div class="col-md-2"><div class="card border-dark mb-3" style="max-width: 18rem;">
-      <div class="card-body text-dark">
-        <h5 class="card-title">Finish Reason</h5>
-        <hr>
-        <p class="card-text"><b>{{log.finish_reason}}</b></p>
-      </div>
-    </div>
-  </div>
-      <div class="col-md-2"><div class="card border-dark mb-3" style="max-width: 18rem;">
-      <div class="card-body text-dark">
-        <h5 class="card-title">Total time running</h5>
-        <hr>
-        <p class="card-text"><b>{{log.runtime}}</b></p>
-      </div>
-    </div>
-  </div>
 </div>
 {% endblock %}

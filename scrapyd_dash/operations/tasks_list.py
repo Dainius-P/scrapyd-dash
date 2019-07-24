@@ -42,7 +42,6 @@ def tasks_list(session, server, project):
             save_tasks(tasks)
     except Exception as e:
         print(e)
-        pass
 
 def save_tasks(tasks):
     for task in tasks:
