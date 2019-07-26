@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ task.id }}{% endblock %}
+
+{% block body %}
+<div class="breadcrumbs" style="background-color: #272c33;">
+    <div class="col-sm-4">
+        <div class="page-header float-left" style="background-color: #272c33; color: white;">
+            <div class="page-title">
+                <h1>Task Nr. <b>{{ task.id }}</b></h1>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-8">
+        <div class="page-header float-right" style="background-color: #272c33;">
+            <div class="page-title">
+                <ol class="breadcrumb text-right" style="background-color: #272c33;">
+                  <h5>
+                  {% if task.status == "running" %}
+                    <span class="badge badge-pill badge-warning"><b>{{ task.status }}</b></span>
+                  {% elif task.status == "pending" %}
+                      <span class="badge badge-pill badge-info"><b>{{ task.status }}</b></span>
+                  {% else %}
+                      <span class="badge badge-pill badge-success"><b>{{ task.status }}</b></span>
+                  {% endif %}
+                </h5>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-body">
+      <h3>Details</h3>
+      <hr>
+      <div class="col-sm-12 mb-4">
+        <div class="card-group">
+          <div class="card col-md-6 no-padding ">
+            <div class="card-body">
+              <div class="h1 text-muted text-right mb-4">
+                <i class="fa fa-file"></i>
+              </div>
+              <div class="h4 mb-0">
+                <span class="count">{{log.pages}}</span>
+              </div>
+              <small class="text-muted text-uppercase font-weight-bold">Pages</small>
+              <div class="progress progress-xs mt-3 mb-0 bg-flat-color-1" style="width: 40%; height: 5px;"></div>
+            </div>
+          </div>
+          <div class="card col-md-6 no-padding ">
+            <div class="card-body">
+              <div class="h1 text-muted text-right mb-4">
+                <i class="fa fa-sitemap"></i>
+              </div>
+              <div class="h4 mb-0">
+                <span class="count">{{log.items}}</span>
+              </div>
+              <small class="text-muted text-uppercase font-weight-bold">Items</small>
+              <div class="progress progress-xs mt-3 mb-0 bg-flat-color-2" style="width: 40%; height: 5px;"></div>
+            </div>
+          </div>
+          <div class="card col-md-6 no-padding ">
+            <div class="card-body">
+              <div class="h1 text-muted text-right mb-4">
+                <i class="fa fa-power-off"></i>
+              </div>
+              <div class="h4 mb-0">{{log.shutdown_reason}}</div>
+              <small class="text-muted text-uppercase font-weight-bold">Shutdown Reason</small>
+              <div class="progress progress-xs mt-3 mb-0 bg-flat-color-3" style="width: 40%; height: 5px;"></div>
+            </div>
+          </div>
+          <div class="card col-md-6 no-padding ">
+            <div class="card-body">
+              <div class="h1 text-muted text-right mb-4">
+                <i class="fa fa-flag-checkered"></i>
+              </div>
+              <div class="h4 mb-0">{{log.finish_reason}}</div>
+              <small class="text-muted text-uppercase font-weight-bold">Finish Reason</small>
+              <div class="progress progress-xs mt-3 mb-0 bg-flat-color-4" style="width: 40%; height: 5px;"></div>
+            </div>
+          </div>
+          <div class="card col-md-6 no-padding ">
+            <div class="card-body">
+              <div class="h1 text-muted text-right mb-4">
+                <i class="fa fa-clock-o"></i>
+              </div>
+              <div class="h4 mb-0">{{log.runtime}}</div>
+              <small class="text-muted text-uppercase font-weight-bold">Total Time Running</small>
+              <div class="progress progress-xs mt-3 mb-0 bg-flat-color-5" style="width: 40%; height: 5px;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+
+{% block title %}Servers{% endblock %}
+
+{% block body %}
+<div class="breadcrumbs">
+    <div class="col-sm-4">
+        <div class="page-header float-left">
+            <div class="page-title">
+                <h1>Servers</h1>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-8">
+        <div class="page-header float-right">
+            <div class="page-title">
+                <ol class="breadcrumb text-right">
+                    <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#AddServerModal">ADD SERVER</button>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="AddServerModal" tabindex="-1" role="dialog" aria-labelledby="addServerModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="addServerModalLabel">
+            <b>Add new ScrapydServer</b></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                <form action="" name="add_server_form" method="post" onsubmit="return ValidateIPaddress(document.add_server_form.server_ip);">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="server_ip">Server IP</label>
+                        <input type="text" class="form-control" name="server_ip" placeholder="Scrapyd Server IP" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="server_port">Server Port</label>
+                        <input type="number" max="65535" min="0" class="form-control" name="server_port" placeholder="Scrapyd Server Port" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-body">
+      <div class="table-responsive">
+        {% if servers %}
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Status</th>
+                  <th>Scrapyd Address</th>
+                  <th>Node Name</th>
+                  <th>Tasks Pending</th>
+                  <th>Tasks Running</th>
+                  <th>Tasks Finished</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for server in servers %}
+                    <tr>
+                      <th scope="row">{{ forloop.counter }}</th>
+                      <td>
+                          {% if server.status == "ok" %} 
+                            <span class="badge badge-success">ONLINE</span> {% else %} <span class="badge badge-danger">OFFLINE</span>
+
+                            <!-- Button trigger modal -->
+                            <button type="button" class="btn btn-link" data-toggle="modal" data-target="#log{{server}}">Log</button>
+
+                            <!-- Modal -->
+                            <div class="modal fade" id="log{{server}}" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
+                              <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title" id="errorModalLabel">
+                                        <b>{{server.ip}}:{{server.port}} error log</b></h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                      <span aria-hidden="true">&times;</span>
+                                    </button>
+                                  </div>
+                                  <div class="modal-body">
+                                    <div class="card">
+                                      <div class="card-body">
+                                        {{server.status_message}}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          {% endif %}</td>
+                      <td>{{server.ip}}:{{server.port}}</td>
+                      {% if server.status == "ok" %} 
+                      <td>{{server.node_name}}</td>
+                      <td><span class="badge badge-pill badge-info">{{server.pending_tasks}}</span></td>
+                      <td><span class="badge badge-pill badge-warning">{{server.running_tasks}}</span></td>
+                      <td><span class="badge badge-pill badge-success">{{server.finished_tasks}}</span></td>
+                      {% else %}
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      {% endif %}
+                      <td>
+                        <button type="submit" class="btn btn-danger btn-sm"  data-toggle="modal" data-target="#delete{{server}}"><b>Delete</b></button>
+                        <div class="modal fade" id="delete{{server}}" tabindex="-1" role="dialog" aria-labelledby="deleteServerModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                    <h5 class="modal-title" id="deleteServerModalLabel">
+                                    <b>Delete ScrapydServer</b></h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form action="" method="post">
+                                            {% csrf_token %}
+                                            <input type="text" name="server_ip" value="{{server.ip}}" hidden>
+                                            <input type="text" name="server_port" value="{{server.port}}" hidden>
+                                            <input type="hidden" name="_method" value="delete">
+                                            <div class="form-group">
+                                              Are you sure you want to delete server <b>{{server.ip}}:{{server.port}}</b>
+                                            </div>
+                                            <button type="submit" class="btn-sm btn-danger">Delete</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                      </td>
+                    </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+        {% else %}
+            <b>There are no servers.</b>
+        {% endif %}
+      </div>
+      {% if servers %}
+        <nav aria-label="Page navigation example">
+          <ul class="pagination justify-content-center">
+            <li class="page-item">
+            {% if servers.has_previous %}
+              <li class="page-item">
+                <a class="page-link" href="?page=1">&laquo; first</a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" href="?page={{ servers.previous_page_number }}">previous</a>
+              </li>
+            {% endif %}
+
+            <li class="page-item disabled"><a class="page-link" href="#">Page {{ servers.number }} of {{ servers.paginator.num_pages }}</a></li>
+
+            {% if servers.has_next %}
+              <li class="page-item">
+                <a class="page-link" href="?page={{ servers.next_page_number }}">Next</a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" href="?page={{ servers.paginator.num_pages }}">Last &raquo;</a>
+              </li>
+            {% endif %}
+          </ul>
+        </nav>
+      {% endif %}
+    </div>
+</div>
+
+{% endblock %}

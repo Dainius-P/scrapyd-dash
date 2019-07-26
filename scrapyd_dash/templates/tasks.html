@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}Tasks{% endblock %}
+
+{% block body %}
+<div class="modal fade" id="AddTaskModal" tabindex="-1" role="dialog" aria-labelledby="addTaskModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="addTaskModalLabel">
+            <b>Add new ScrapydServer</b></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                <form action="" method="post">
+                  {% csrf_token %}
+                    <div class="form-group">
+                        <label for="name">Task Name</label>
+                        <input type="text" class="form-control" name="name" placeholder="Task name">
+                    </div>
+                    <hr>
+                    <div class="form-group">
+                      <select id="serverSelect" name="server" class="form-control" required>
+                        <option selected value="" disabled>Select Server</option>
+                        {% for server in servers %}
+                          <option value="{{server.pk}}">{{ server }}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <select id="projectSelect" name="project" class="form-control" required>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <select id="versionSelect" name="version" class="form-control" required>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <select id="spiderSelect" name="spider" class="form-control" required>
+                      </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="breadcrumbs">
+    <div class="col-sm-4">
+        <div class="page-header float-left">
+            <div class="page-title">
+                <h1>Tasks</h1>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-8">
+        <div class="page-header float-right">
+            <div class="page-title">
+                <ol class="breadcrumb text-right">
+                    <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#AddTaskModal">ADD TASK</button>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-body">
+      <div class="table-responsive">
+        {% if tasks %}
+          <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Task Name</th>
+                <th>Status</th>
+                <th>Spider Name</th>
+                <th>Server Address</th>
+                <th>Runtime</th>
+                <th>Start DateTime</th>
+                <th>End DateTime</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for task in tasks %}
+                <tr>
+                  <th scope="row">{{ forloop.counter }}</th>
+                  <td>{{ task.name }}</td>
+                  <td>
+                    {% if task.status == "running" %}
+                        <span class="badge badge-warning"><b>{{ task.status }}</b></span>
+                    {% elif task.status == "finished" %}
+                        <span class="badge badge-success"><b>{{ task.status }}</b></span>
+                    {% else %}
+                        <span class="badge badge-info"><b>pending</b></span>
+                    {% endif %}
+                  </td>
+                  <td>{{ task.spider }}</td>
+                  <td>{{ task.server.ip}}:{{ task.server.port}}</td>
+                  <td>{% if task.runtime %} {{ task.runtime }} {% endif %}</td>
+                  <td>{% if task.start_datetime %} {{ task.print_start }} {% endif %}</td>
+                  <td>{% if task.finished_datetime %}{{ task.print_finish }} {% endif %}</td>
+                  <td>
+                    <div class="btn-group" role="group">
+                        <form action="{% url 'task_details' task.id %}" method="post" style="margin-right: 5px;">
+                          {% csrf_token %}
+                            <input type="hidden" name="_method" value="delete">
+                              {% if task.status == "running" %}
+                                  <button type="submit" class="btn btn-danger btn-sm"><b>Stop</b></button>
+                              {% elif task.status == "pending" %}
+                                  <button type="submit" class="btn btn-danger btn-sm"><b>Remove</b></button>
+                              {% else %}
+                                  <button type="submit" class="btn btn-danger btn-sm"><b>Remove</b></button>
+                              {% endif %}
+                              </form>
+                              <form action="{% url 'task_details' task.id %}" method="get">
+                                <button type="submit"  class="btn btn-outline-primary btn-sm"><b>Details</b></button>
+                              </form>
+                            </div>
+                          </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <b>There are no tasks.</b>
+        {% endif %}
+    </div>
+    {% if tasks %}
+      <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+          <li class="page-item">
+          {% if tasks.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?page=1">&laquo; first</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="?page={{ tasks.previous_page_number }}">previous</a>
+            </li>
+          {% endif %}
+
+          <li class="page-item disabled"><a class="page-link" href="#">Page {{ tasks.number }} of {{ tasks.paginator.num_pages }}</a></li>
+
+          {% if tasks.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ tasks.next_page_number }}">Next</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="?page={{ tasks.paginator.num_pages }}">Last &raquo;</a>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>
+    {% endif %}
+  </div>
+</div>
+
+<script type="text/javascript" src="{% static 'js/chained_dropdown.js' %}"></script>
+{% endblock %}
