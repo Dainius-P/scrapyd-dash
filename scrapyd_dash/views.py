@@ -297,15 +297,21 @@ class TaskDetailsView(View):
         try:
             task = Task.objects.get(id=pk)
 
-            if task.status == "finished":
-                task.deleted = True
-                task.save()
-
-                message = "Successfully deleted task: {}".format(pk)
+            if task.stopping == True:
+                message = "Task: {} is stopping.".format(pk)
             else:
-                cancel_task(task.server, task.project, pk)
+                if task.status == "finished":
+                    task.deleted = True
+                    task.save()
 
-                message = "Stopping task: {}".format(pk)
+                    message = "Successfully deleted task: {}".format(pk)
+                else:
+                    cancel_task(task.server, task.project, pk)
+
+                    task.stopping = True
+                    task.save()
+
+                    message = "Stopping task: {}".format(pk)
 
             messages.success(request, message)
         except Task.DoesNotExist:

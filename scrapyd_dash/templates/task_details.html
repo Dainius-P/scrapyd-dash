@@ -86,13 +86,31 @@
               <div class="h1 text-muted text-right mb-4">
                 <i class="fa fa-clock-o"></i>
               </div>
-              <div class="h4 mb-0">{{log.runtime}}</div>
+              <div class="h4 mb-0">{{task.runtime}}</div>
               <small class="text-muted text-uppercase font-weight-bold">Total Time Running</small>
               <div class="progress progress-xs mt-3 mb-0 bg-flat-color-5" style="width: 40%; height: 5px;"></div>
             </div>
           </div>
         </div>
       </div>
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <div class="float-right">
+          <form action="{% url 'task_details' task.id %}" method="post" style="margin-right: 5px;">
+            <input type="hidden" name="_method" value="delete">
+            {% csrf_token %}
+            {% if task.status == "running" %}
+              <button type="submit" class="btn btn-danger btn-sm"><b>Stop Task</b></button>
+            {% elif task.status == "pending" %}
+                <button type="submit" class="btn btn-danger btn-sm"><b>Remove Task</b></button>
+            {% else %}
+                <button type="submit" class="btn btn-danger btn-sm"><b>Remove Task</b></button>
+            {% endif %}
+          </form>
+        </div>
     </div>
 </div>
 {% endblock %}
