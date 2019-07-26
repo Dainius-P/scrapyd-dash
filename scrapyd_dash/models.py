@@ -74,6 +74,7 @@ class Task(models.Model):
     update_datetime = models.DateTimeField(auto_now=True)
 
     deleted = models.BooleanField(null=False, default=False)
+    stopping = models.BooleanField(null=False, default=False)
 
     """
     Prints out start datetime in a custom format

@@ -9,7 +9,7 @@ def start_updater():
 
     scheduler.add_job(check_servers.update_servers, 'cron', second=0)
     scheduler.add_job(projects_list.update_projects, 'cron', second=30)
-    scheduler.add_job(tasks_list.update_tasks, 'interval', seconds=5)
+    scheduler.add_job(tasks_list.update_tasks, 'interval', seconds=10)
 
     
     scheduler.start()

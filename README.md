@@ -13,7 +13,11 @@ A dashboard specifically used for scrapyd servers to manipulate scrapy spiders (
 
 ### Demo
 
-[Demo website](https://www.example.com)
+[Demo website](https://scrapyddash.herokuapp.com/)
+
+Username: **demo**
+
+Password: **demo**
 
 ### Installing
 
