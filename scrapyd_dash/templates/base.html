@@ -17,16 +17,11 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script type="text/javascript" src="{% static 'js/bootstrap-notify.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/script.js' %}"></script>
-    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.css">
 
     <link rel="stylesheet" href="{% static 'vendors/bootstrap/dist/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'vendors/font-awesome/css/font-awesome.min.css' %}">
-
-
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
-
 </head>
 
 <body>
@@ -58,6 +53,9 @@
                     </li>
                     <li>
                          <a href="{% url 'tasks' %}" > <i class="menu-icon fa fa-tasks"></i>Tasks</a>
+                    </li>
+                    <li>
+                         <a href="{% url 'scheduled_tasks' %}" > <i class="menu-icon fa fa-calendar"></i>Scheduled Tasks</a>
                     </li>
                     <li>
                         <h3 class="menu-title">Extras</h3>

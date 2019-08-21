@@ -10,7 +10,7 @@
         <div class="modal-content">
             <div class="modal-header">
             <h5 class="modal-title" id="addTaskModalLabel">
-            <b>Add new ScrapydServer</b></h5>
+            <b>Add new Task</b></h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
             </button>
@@ -27,7 +27,7 @@
                       <select id="serverSelect" name="server" class="form-control" required>
                         <option selected value="" disabled>Select Server</option>
                         {% for server in servers %}
-                          <option value="{{server.pk}}">{{ server }}</option>
+                          <option value="{{server.pk}}">{{ server.ip }}:{{ server.port }}</option>
                         {% endfor %}
                       </select>
                     </div>

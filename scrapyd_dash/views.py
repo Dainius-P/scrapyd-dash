@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.core.paginator import Paginator
-from .models import ScrapydServer, Task, ScrapydProject, ScrapydProjectVersion, ScheduledTasks
+from .models import *
 from .operations.projects_list import update_projects
 from .operations.spiders_list import spiders_list
 from .operations.tasks_cancel import cancel_task
@@ -9,13 +9,14 @@ from .operations.tasks_add import add_task
 from .operations.check_servers import update_servers
 from .operations.tasks_list import update_tasks
 from django.http import HttpResponseRedirect, JsonResponse
-from django.core.paginator import Paginator
 from django.contrib import messages
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse
 from django.db import IntegrityError
 from django.views import View
 from .serializers import *
 from django.contrib.auth import authenticate, login, logout
+from django.template.defaultfilters import slugify
+import json
 
 class ServersListView(View):
     template_view = "servers.html"
@@ -262,6 +263,27 @@ class TaskDetailsView(View):
         return super(TaskDetailsView, self).dispatch(*args, **kwargs)
 
     """
+    Parses graph data from LogParser so CharJs could use it
+    """
+    def graph_data(self, data):
+        out = {
+            "labels": [],
+            "items_total": [],
+            "items_minute": [],
+            "pages_total": [],
+            "pages_minute": []
+        }
+
+        for d in data:
+            out['labels'].append(d[0])
+            out['items_total'].append(d[1])
+            out['items_minute'].append(d[2])
+            out['pages_total'].append(d[3])
+            out['pages_minute'].append(d[4])
+
+        return out
+
+    """
     Get task details
     """
     def get(self, request, pk, *args, **kwargs):
@@ -281,11 +303,11 @@ class TaskDetailsView(View):
 
             return HttpResponseRedirect(reverse('tasks'))
 
-
         return render(request,
                       self.template_view,
                       {"task": task,
-                       "log": log})
+                       "log": log,
+                       "log_graph": self.graph_data(log['datas'])})
     """
     Deletes task
     If the task is pending/finished, it will be removed. 
@@ -326,3 +348,87 @@ class TaskDetailsView(View):
             messages.error(request, message)
 
         return HttpResponseRedirect(reverse('tasks'))
+
+class SchedulerTasksListView(View):
+    template_view = 'scheduled_tasks.html'
+
+    def get(self, request, *args, **kwargs):
+        tasks_list = ScheduledTask.objects.filter()
+        pagi = Paginator(tasks_list, 10) # Show 10 scheduled tasks
+
+        page = request.GET.get('page')
+        s_tasks = pagi.get_page(page)
+
+        servers = ScrapydServer.objects.filter(status="ok")
+
+        return render(request,
+                      self.template_view,
+                      {"s_tasks": s_tasks,
+                       "servers": servers})
+
+    def post(self, request, *args, **kwargs):
+        data = request.POST
+
+        server_pk = data.get('server')
+        project_pk = data.get('project')
+        version_pk = data.get('version')
+
+        server = ScrapydServer.objects.get(pk=server_pk)
+        project = ScrapydProject.objects.get(pk=project_pk)
+
+        if version_pk:
+            version = ScrapydProjectVersion.objects.get(pk=version_pk)
+        else:
+            version = None
+
+        try:
+            ScheduledTask.objects.create(
+                name=slugify(data.get('name')),
+                project=project,
+                spider=data.get('spider'),
+                server=server,
+                year=int(data.get('year')) if data.get('year') != '' else None,
+                month=int(data.get('month')) if data.get('month') != '' else None,
+                day=int(data.get('day')) if data.get('day') != '' else None,
+                week=int(data.get('week')) if data.get('week') != '' else None,
+                day_of_week=int(data.get('day_of_week')) if data.get('day_of_week') != '' else None,
+                hour=int(data.get('hour')) if data.get('hour') != '' else None,
+                minute=int(data.get('minute')) if data.get('minute') != '' else None
+            )
+            message = "Successfully created scheduled task: {}".format("")
+
+            messages.success(request, message)
+        except Exception as e:
+            print(e)
+            message = "Something went wrong creating new scheduled task"
+            messages.error(request, message)
+
+        return HttpResponseRedirect(reverse('scheduled_tasks'))
+
+class SchedulerTasksDetailsView(View):
+    """
+    This dispatcher is here because django does not 
+    support delete method
+    """
+    def dispatch(self, *args, **kwargs):
+        method = self.request.POST.get('_method', '').lower()
+        if method == 'delete':
+            return self.delete(*args, **kwargs)
+        return super(SchedulerTasksDetailsView, self).dispatch(*args, **kwargs)
+
+
+    def delete(self, request, pk, *args, **kwargs):
+        try:
+            task = ScheduledTask.objects.get(name=pk)
+            task.delete()
+
+            message = "Successfully deleted scheduled task: {}".format(pk)
+            messages.success(request, message)
+        except ScheduledTask.DoesNotExist:
+            message = "Scheduled Task {} does not exist".format(pk)
+
+            messages.error(request, message)
+        except Exception as e:
+            print(e)
+
+        return HttpResponseRedirect(reverse('scheduled_tasks'))

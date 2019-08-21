@@ -4,6 +4,9 @@
 {% block title %}{{ task.id }}{% endblock %}
 
 {% block body %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js" integrity="sha256-xKeoJ50pzbUGkpQxDYHD7o7hxe0LaOGeguUidbq6vis=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.js" integrity="sha256-arMsf+3JJK2LoTGqxfnuJPFTU4hAK57MtIPdFpiHXOU=" crossorigin="anonymous"></script>
+
 <div class="breadcrumbs" style="background-color: #272c33;">
     <div class="col-sm-4">
         <div class="page-header float-left" style="background-color: #272c33; color: white;">
@@ -33,7 +36,7 @@
 
 <div class="card shadow mb-4">
     <div class="card-body">
-      <h3>Details</h3>
+      <h3>General Details</h3>
       <hr>
       <div class="col-sm-12 mb-4">
         <div class="card-group">
@@ -98,6 +101,22 @@
 
 <div class="card shadow mb-4">
     <div class="card-body">
+      <h3>LogParser Visualization</h3>
+      <hr>
+      <div class="col-sm-12 mb-4">
+        <div class="card-group">
+          <div class="card">
+            <canvas id="logParserChart" width="389" height="100"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+
+
+
+<div class="card shadow mb-4">
+    <div class="card-body">
         <div class="float-right">
           <form action="{% url 'task_details' task.id %}" method="post" style="margin-right: 5px;">
             <input type="hidden" name="_method" value="delete">
@@ -113,4 +132,52 @@
         </div>
     </div>
 </div>
+
+<script>
+  var ctx = document.getElementById('logParserChart').getContext('2d');
+  var data = {{ log_graph|safe }};
+
+
+  var myChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+          labels: data.labels,
+          datasets: [
+          {
+              label: 'Pages Count Per Minute',
+              data: data.pages_minute,
+              fill: false,
+              backgroundColor: [
+                  'rgb(255, 99, 132)'
+              ],
+              borderColor: [
+                  'rgb(255, 99, 132)'
+              ],
+              borderWidth: 3
+          },
+          {
+              label: 'Items Count Per Minute',
+              data: data.items_minute,
+              fill: false,
+              backgroundColor: [
+                  'rgb(54, 162, 235)'
+              ],
+              borderColor: [
+                  'rgb(54, 162, 235)'
+              ],
+              borderWidth: 3
+          }]
+      },
+      options: {
+          scales: {
+              yAxes: [{
+                  ticks: {
+                      beginAtZero: true
+                  }
+              }]
+          }
+      }
+  });
+</script>
+
 {% endblock %}

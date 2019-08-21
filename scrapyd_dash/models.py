@@ -92,31 +92,47 @@ class Task(models.Model):
         ordering = ['-create_datetime']
         db_table = 'scrapyd_dash_tasks'
 
-class ScheduledTasks(models.Model):
-    id = models.PositiveIntegerField(primary_key=True)
-    name = models.CharField(max_length=256, null=True)
+class ScheduledTask(models.Model):
+    name = models.CharField(max_length=256, primary_key=True)
+    tasks = models.ManyToManyField(Task,
+                              blank=True)
+
     create_datetime = models.DateTimeField(auto_now_add=True)
     update_datetime = models.DateTimeField(auto_now=True)
 
-    project = models.CharField(max_length=256, null=False)
-    spider = models.CharField(max_length=256, null=False)
+    project = models.ForeignKey(ScrapydProject,
+                                on_delete=models.CASCADE,
+                                null=False,
+                                blank=False)
+    spider = models.CharField(max_length=256, null=False, blank=False)
 
-    year = models.PositiveIntegerField(null=False)
-    month = models.PositiveIntegerField(null=False,
+    server = models.ForeignKey(ScrapydServer,
+                               on_delete=models.CASCADE,
+                               null=False,
+                               blank=False)
+
+    year = models.PositiveIntegerField(null=True, blank=True)
+    month = models.PositiveIntegerField(null=True, blank=True,
                                  validators=[MaxValueValidator(12)])
-    day = models.PositiveIntegerField(null=False,
+    day = models.PositiveIntegerField(null=True, blank=True,
                                validators=[MaxValueValidator(32)])
-    week = models.PositiveIntegerField(null=False)
-    day_of_week = models.PositiveIntegerField(null=False,
+    week = models.PositiveIntegerField(null=True, blank=True)
+    day_of_week = models.PositiveIntegerField(null=True, blank=True,
                                        validators=[MaxValueValidator(7)])
-    hour = models.PositiveIntegerField(null=False,
+    hour = models.PositiveIntegerField(null=True, blank=True,
                                 validators=[MaxValueValidator(24)])
-    minute = models.PositiveIntegerField(null=False,
-                                  validators=[MaxValueValidator(60)])
-    second = models.PositiveIntegerField(null=False,
+    minute = models.PositiveIntegerField(null=True, blank=True,
                                   validators=[MaxValueValidator(60)])
 
-    deleted = models.BooleanField(null=False, default=False)
+    last_run = models.DateTimeField(null=True, blank=True)
+    next_run = models.DateTimeField(null=True, blank=True)
+
+    def print_last_run(self):
+        return self.last_run.strftime('%Y-%m-%d %H:%M')
+
+    def print_next_run(self):
+        return self.next_run.strftime('%Y-%m-%d %H:%M')
 
     class Meta:
+        ordering = ['-create_datetime']
         db_table = 'scrapyd_dash_scheduled_tasks'
