@@ -8,7 +8,8 @@ A dashboard specifically used for scrapyd servers to manipulate scrapy spiders (
 - [x] Tasks (add, remove, list)
 - [x] Authentification (Using the Django authentication system)
 - [ ] Scheduled tasks (add, remove, list)
-- [ ] Multi user support
+- [ ] View logs
+- [ ] Multiple independent user support
 - [ ] Task performance details
 
 ### Demo
@@ -42,8 +43,9 @@ urlpatterns = [
 
 ### Built With
 
-* [Django](https://www.djangoproject.com/) - The web framework used
-* [ScrapyD](https://github.com/scrapy/scrapyd) - A service daemon to run Scrapy spiders
+* [Django](https://www.djangoproject.com/) - The web framework used.
+* [ScrapyD](https://github.com/scrapy/scrapyd) - A service daemon to run Scrapy spiders.
+* [LogParser](https://github.com/my8100/logparser) - A tool for parsing Scrapy log files.
 
 ### Authors
 

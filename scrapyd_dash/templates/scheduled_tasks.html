@@ -1,0 +1,198 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}Tasks{% endblock %}
+
+{% block body %}
+<div class="modal fade" id="AddScheduleTaskModal" tabindex="-1" role="dialog" aria-labelledby="addScheduleTaskModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="addScheduleTaskModal">
+            <b>Add new Scheduled Task</b></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                <form action="" method="post">
+                  {% csrf_token %}
+                    <div class="form-group">
+                        <label for="name">Scheduled Task Name</label>
+                        <input type="text" class="form-control" name="name" placeholder="Task name" required>
+                    </div>
+                    <hr>
+                    <div class="form-group">
+                      <select id="serverSelect" name="server" class="form-control" required>
+                        <option selected value="" disabled>Select Server</option>
+                        {% for server in servers %}
+                          <option value="{{server.pk}}">{{ server.ip }}:{{ server.port }}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <select id="projectSelect" name="project" class="form-control" required>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <select id="versionSelect" name="version" class="form-control" required>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <select id="spiderSelect" name="spider" class="form-control" required>
+                      </select>
+                    </div>
+                    <hr>
+                    <div class="form-group">
+                        <div class="row">
+                          <div class="col-4">
+                            <label for="year">Year</label>
+                            <input type="number" class="form-control" name="year" placeholder="xxxx" min=1>
+                          </div>
+                          <div class="col-4">
+                            <label for="month">Month</label>
+                            <input type="number" class="form-control" name="month" placeholder="xx" min=1 max=12>
+                          </div>
+                          <div class="col-4">
+                            <label for="day">Day</label>
+                            <input type="number" class="form-control" name="day" placeholder="xx" min=1 max=31>
+                          </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="form-group">
+                        <div class="row">
+                          <div class="col-6">
+                            <label for="week">Week</label>
+                            <input type="number" class="form-control" name="week" placeholder="xx" min=1 max=53>
+                          </div>
+                          <div class="col-6">
+                            <label for="month">Day Of Week</label>
+                            <select id="day_of_week" name="day_of_week" class="form-control">
+                              <option default></option>
+                              <option value=1>Monday</option>
+                              <option value=2>Tuesday</option>
+                              <option value=3>Wednesday</option>
+                              <option value=4>Thursday</option>
+                              <option value=5>Friday</option>
+                              <option value=6>Saturday</option>
+                              <option value=7>Sunday</option>
+                            </select>
+                          </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="form-group">
+                        <div class="row">
+                          <div class="col-6">
+                            <label for="hour">Hour</label>
+                            <input type="number" class="form-control" name="hour" placeholder="xx" min=0 max=24>
+                          </div>
+                          <div class="col-6">
+                            <label for="minute">Minute(*)</label>
+                            <input type="number" class="form-control" name="minute" placeholder="xx" min=0 max=60 required>
+                          </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="breadcrumbs">
+    <div class="col-sm-4">
+        <div class="page-header float-left">
+            <div class="page-title">
+                <h1>Scheduled Tasks</h1>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-8">
+        <div class="page-header float-right">
+            <div class="page-title">
+                <ol class="breadcrumb text-right">
+                    <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#AddScheduleTaskModal">SCHEDULE TASK</button>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-body">
+      <div class="table-responsive">
+        {% if s_tasks %}
+          <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Scheduled Task Name</th>
+                <th>Spider Name</th>
+                <th>Server Address</th>
+                <th>Last Run</th>
+                <th>Next Run</th>
+                <th>Times runned</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for task in s_tasks %}
+                <tr>
+                  <th scope="row">{{ forloop.counter }}</th>
+                  <td>{{ task.name }}</td>
+                  <td>{{ task.spider }}</td>
+                  <td>{{ task.server.ip }}:{{ task.server.port }}</td>
+                  <td>{% if task.last_run %} {{ task.print_last_run }} {% endif %}</td>
+                  <td>{% if task.next_run %} {{ task.print_next_run }} {% endif %}</td>
+                  <td><span class="badge badge-pill badge-success"><b>{{ task.tasks.count }}</b></span></td>
+                  <td>
+                    <div class="btn-group" role="group">
+                        <form action="{% url 'scheduled_task_details' task.pk %}"  style="margin-right: 5px;" method="POST">
+                          {% csrf_token %}
+                            <input type="hidden" name="_method" value="delete">
+                            <button type="submit" class="btn btn-danger btn-sm"><b>Remove</b></button>
+                        </form>
+                    </div>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <b>There are no scheduled tasks.</b>
+        {% endif %}
+    </div>
+    {% if s_tasks %}
+      <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+          <li class="page-item">
+          {% if s_tasks.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?page=1">&laquo; first</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="?page={{ s_tasks.previous_page_number }}">previous</a>
+            </li>
+          {% endif %}
+
+          <li class="page-item disabled"><a class="page-link" href="#">Page {{ s_tasks.number }} of {{ s_tasks.paginator.num_pages }}</a></li>
+
+          {% if s_tasks.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ s_tasks.next_page_number }}">Next</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="?page={{ s_tasks.paginator.num_pages }}">Last &raquo;</a>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>
+    {% endif %}
+  </div>
+</div>
+
+<script type="text/javascript" src="{% static 'js/chained_dropdown.js' %}"></script>
+{% endblock %}

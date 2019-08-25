@@ -66,7 +66,6 @@ def save_tasks(tasks):
             Task.objects.update_or_create(
                 id=j.get("id"),
                 defaults={
-                    "name": j.get("name", "default"),
                     "status": task.get("status"),
                     "server": task.get("server"),
                     "project": task.get("project"),
