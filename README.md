@@ -7,7 +7,7 @@ A dashboard specifically used for scrapyd servers to manipulate scrapy spiders (
 - [x] Scrapyd server status
 - [x] Tasks (add, remove, list)
 - [x] Authentification (Using the Django authentication system)
-- [ ] Scheduled tasks (add, remove, list)
+- [x] Scheduled tasks (add, remove, list)
 - [ ] View logs
 - [ ] Multiple independent user support
 - [ ] Task performance details
